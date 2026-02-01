@@ -6,9 +6,9 @@
     <title>Streamplan OutburstOne</title>
     <style>
         :root { 
-            --background-gradient-1: #FEF3F7; --background-gradient-2: #FFC7D6; 
-            --text-color: #301826; --accent-pink: #F47590; --border-color: #EB6E9C; 
-            --date-bg: #FFE4ED; --badge-color: #F47590; --action-color: #FF5C8A;
+            --background-gradient-1: #f0f7ff; --background-gradient-2: #c7d9ff; 
+            --text-color: #1a2a40; --accent-blue: #3b82f6; --border-color: #93c5fd; 
+            --date-bg: #e0efff; --badge-color: #2563eb; --action-color: #1d4ed8;
             --live-red: #ff0000;
         }
 
@@ -30,28 +30,30 @@
         }
 
         .dot { width: 12px; height: 12px; background: white; border-radius: 50%; }
-        h1 { font-size: 45px; color: #301826; margin: 0; }
-        h1 span { display: block; font-size: 28px; color: var(--accent-pink); font-weight: normal; }
+        h1 { font-size: 45px; color: #1a2a40; margin: 0; }
+        h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
 
-        section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: white; overflow: hidden; text-align: left; box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
-        .past-day { opacity: 0.5; filter: grayscale(50%); }
-        .today { box-shadow: 0 0 35px var(--accent-pink); border: 3px solid var(--accent-pink); transform: scale(1.02); }
+        section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: white; overflow: hidden; text-align: left; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .past-day { opacity: 0.5; filter: grayscale(80%); }
+        .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.4); border: 3px solid var(--accent-blue); transform: scale(1.02); }
 
         .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
-        .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-pink); }
+        .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-blue); }
 
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
-        .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f0f0; }
+        .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f4f8; }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; }
+        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #dbeafe; }
         
         .slot-body { flex: 1; }
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
-        .event-title { margin: 0; font-weight: 800; font-size: 18px; }
+        .event-title { margin: 0; font-weight: 800; font-size: 18px; color: #1e3a8a; }
         
-        .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
-        .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: var(--accent-pink); font-size: 22px; letter-spacing: 1px; }
+        .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; transition: background 0.2s; }
+        .btn-link:hover { background: #1e40af; }
+        
+        .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: #64748b; font-size: 22px; letter-spacing: 1px; background-color: #f8fafc; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
     </style>
@@ -63,7 +65,7 @@
         <div class="dot"></div> JETZT LIVE AUF TWITCH
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
-    <p id="status-msg">Pläne werden geladen...</p>
+    <p id="status-msg" style="color: var(--accent-blue); font-weight: bold;">Synchronisiere...</p>
 </header>
 
 <main id="plan-container"></main>
@@ -87,17 +89,10 @@
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 4) return;
 
-            // EXAKTE ZUORDNUNG NACH DEINER TABELLE
-            const tag = clean[0];
-            const datumStr = clean[1];
-            const zeit = clean[2];
-            const titel = clean[3];
-            const spielID = clean[4]; // Spalte E: Nur für das Bild!
-            const status = clean[5] ? clean[5].toLowerCase() : ""; // Spalte F: Live/Offday
-            const gaeste = clean[6];  // Spalte G
-            const link = clean[7];    // Spalte H
+            // ZUORDNUNG: A=Tag, B=Datum, C=Zeit, D=Titel, E=SpielID, F=Status, G=Gäste, H=Link
+            const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
+            const status = statusRaw ? statusRaw.toLowerCase() : "";
 
-            // Live-Check (Spalte F)
             if (status === 'live') isLiveNow = true;
 
             if (datumStr !== lastDate) {
@@ -114,18 +109,15 @@
             }
 
             if (status === 'offday') {
-                currentSlotsDiv.innerHTML = `<div class="offday-container">✨ STREAMFREI ✨</div>`;
+                currentSlotsDiv.innerHTML = `<div class="offday-container">❄️ STREAMFREI ❄️</div>`;
             } else if (!currentSlotsDiv.innerHTML.includes('STREAMFREI')) {
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
-                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
-                
-                // Nutze Spiel-ID aus Spalte E für das Bild. Fallback: Just Chatting (509658)
+                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-blue); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
                 const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
-                const finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg`;
-
+                
                 const slotHTML = `
                     <div class="slot">
-                        <img src="${finalImg}" alt="">
+                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
                         <div class="slot-body">
                             <div class="time-badge">${zeit} Uhr</div>
                             <p class="event-title">${titel}</p>
@@ -138,7 +130,7 @@
         });
 
         document.getElementById('live-indicator').style.display = isLiveNow ? 'inline-flex' : 'none';
-        document.getElementById('status-msg').innerText = "Wochenübersicht";
+        document.getElementById('status-msg').innerText = "Aktueller Wochenplan";
     });
 </script>
 </body>
