@@ -160,8 +160,8 @@
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:20px;">❄️ STREAMFREI ❄️</div>`;
             } else {
                 let finalImg;
-                // EXTRA-FIX FÜR GOOGLE SHEET LINKS (Entfernt allen Müll)
-                let ultraCleanID = spielID.replace(/[^\x20-\x7E]/g, "").replace(/["']/g, "").trim();
+                // EXTRA-FIX FÜR GOOGLE SHEET LINKS + SEMIKOLON-ENTFERNUNG
+                let ultraCleanID = spielID.split(';')[0].replace(/[^\x20-\x7E]/g, "").replace(/["']/g, "").trim();
 
                 if (ultraCleanID.toLowerCase().includes('http')) {
                     finalImg = ultraCleanID;
