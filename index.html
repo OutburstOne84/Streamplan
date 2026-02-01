@@ -60,59 +60,63 @@
     </main>
 
 <script>
-    // --- KONFIGURATION ---
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
     const SHEET_NAME = 'Plan'; 
-    // ---------------------
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
 
-    const fullUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
-
-    fetch(fullUrl)
+    fetch(url)
         .then(res => res.text())
         .then(data => {
             const rows = data.split('\n').slice(1);
             const container = document.getElementById('plan-container');
             container.innerHTML = '';
-            document.getElementById('status-msg').innerText = "Wochenplan";
+            
+            // Aktuelles Datum ohne Uhrzeit zum Vergleich
+            const heute = new Date();
+            heute.setHours(0, 0, 0, 0);
 
             rows.forEach(row => {
-                // CSV Spalten trennen (beachtet Anführungszeichen)
-                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-                const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
+                const cols = row.split('","').map(c => c.replace(/"/g, '').trim());
+                if (cols.length < 5) return;
 
-                if (clean.length < 5) return;
-                const [tag, datum, zeit, titel, untertitel, spielID, status] = clean;
+                const [tag, datumStr, zeit, titel, untertitel, spielID, manuellerStatus] = cols;
+
+                // Datum aus Tabelle parsen (Format TT.MM.JJJJ)
+                const parts = datumStr.split('.');
+                const terminDatum = new Date(parts[2], parts[1] - 1, parts[0]);
+                terminDatum.setHours(0, 0, 0, 0);
 
                 const section = document.createElement('section');
-                if (status.toLowerCase().includes('today')) section.className = 'today';
+                
+                // Logik für Highlights und Verblassen
+                if (terminDatum.getTime() === heute.getTime()) {
+                    section.className = 'today'; // Leuchtet
+                } else if (terminDatum.getTime() < heute.getTime()) {
+                    section.style.opacity = "0.35"; // Verblasst
+                    section.style.filter = "grayscale(50%)";
+                }
 
-                let innerHTML = `
-                    <div class="weekday"><h3><span>${tag}</span>${datum}</h3></div>
-                    <div class="slots">`;
+                let html = `<div class="weekday"><h3><span>${tag}</span>${datumStr}</h3></div><div class="slots">`;
 
-                if (status.toLowerCase().includes('offday')) {
-                    innerHTML += `<div class="offday-text">✨ Streamfrei ✨</div>`;
+                if (manuellerStatus && manuellerStatus.toLowerCase().includes('offday')) {
+                    html += `<div class="offday-text">✨ Streamfrei ✨</div>`;
                 } else {
-                    innerHTML += `
+                    html += `
                         <a href="https://twitch.tv/jennyan" target="_blank" class="slot">
-                            <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID}-144x192.jpg" alt="Game">
+                            <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg">
                             <div class="content">
-                                <h4>ab ${zeit} Uhr</h4>
-                                <p>${titel} <span>${untertitel}</span></p>
+                                <h4>ab ${zeit || '??:??'} Uhr</h4>
+                                <p>${titel || 'Stream'} <span>${untertitel || ''}</span></p>
                             </div>
                         </a>`;
                 }
 
-                innerHTML += `</div>`;
-                section.innerHTML = innerHTML;
+                html += `</div>`;
+                section.innerHTML = html;
                 container.appendChild(section);
             });
-        })
-        .catch(err => {
-            document.getElementById('status-msg').innerText = "Fehler beim Laden. ID oder Freigabe prüfen!";
-            console.error(err);
+            document.getElementById('status-msg').innerText = "Wochenplan (automatisch aktualisiert)";
         });
 </script>
-
 </body>
 </html>
