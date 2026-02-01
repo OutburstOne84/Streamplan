@@ -7,32 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root { 
-            --bg-1: #f0f7ff; --bg-2: #c7d9ff; 
-            --text-color: #1a2a40; --accent-blue: #3b82f6; --border-color: #93c5fd; 
-            --section-bg: #ffffff; --date-bg: #e0efff; --badge-color: #2563eb; 
-            --action-color: #1d4ed8; --slot-border: #f0f4f8;
-            --social-color: #1e3a8a;
-            /* Live Farben */
-            --twitch-color: #9146FF;
-            --youtube-color: #FF0000;
+            --bg-1: #f0f7ff; --bg-2: #c7d9ff; --text-color: #1a2a40; --accent-blue: #3b82f6; 
+            --border-color: #93c5fd; --section-bg: #ffffff; --date-bg: #e0efff; 
+            --badge-color: #2563eb; --action-color: #1d4ed8; --slot-border: #f0f4f8;
+            --social-color: #1e3a8a; --twitch-color: #9146FF; --youtube-color: #FF0000;
             --multi-gradient: linear-gradient(90deg, #9146FF, #FF0000);
         }
 
         [data-theme="dark"] {
-            --bg-1: #0f172a; --bg-2: #1e293b; 
-            --text-color: #f1f5f9; --accent-blue: #60a5fa; --border-color: #334155; 
-            --section-bg: #1e293b; --date-bg: #334155; --badge-color: #3b82f6; 
-            --action-color: #2563eb; --slot-border: #475569;
-            --social-color: #f1f5f9;
+            --bg-1: #0f172a; --bg-2: #1e293b; --text-color: #f1f5f9; --accent-blue: #60a5fa; 
+            --border-color: #334155; --section-bg: #1e293b; --date-bg: #334155; 
+            --badge-color: #3b82f6; --action-color: #2563eb; --slot-border: #475569; --social-color: #f1f5f9;
         }
 
-        body { 
-            margin: 0; font-family: 'Segoe UI', sans-serif; 
-            background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); 
-            min-height: 100vh; color: var(--text-color); padding-bottom: 50px; 
-            transition: background 0.3s ease, color 0.3s ease;
-        }
-        
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; transition: 0.3s; }
         header, main, footer { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
         header { padding: 40px 0 20px; }
 
@@ -47,45 +35,41 @@
 
         /* LIVE BADGES */
         .live-tag-badge {
-            color: white; padding: 8px 12px; border-radius: 12px;
-            font-weight: 900; font-size: 13px; display: inline-flex; flex-direction: column; 
-            align-items: center; gap: 5px; margin-top: 15px; text-decoration: none; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); animation: pulse-l 1.5s infinite; border: 2px solid white;
+            color: white; padding: 8px 12px; border-radius: 12px; font-weight: 900; font-size: 13px; 
+            display: inline-flex; flex-direction: column; align-items: center; gap: 5px; 
+            margin-top: 15px; text-decoration: none; cursor: pointer; border: 2px solid white;
+            animation: pulse-l 1.5s infinite;
         }
         @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
-        h1 { font-size: 45px; margin: 0; }
-        h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
-        #status-container { margin-top: 15px; font-size: 16px; font-weight: bold; }
-        #week-range { background: var(--badge-color); color: white; padding: 5px 15px; border-radius: 8px; display: inline-block; margin-left: 5px; }
-
         /* SECTIONS */
         section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-        .past-day { opacity: 0.5; filter: grayscale(80%); transition: 0.3s; }
-        .past-day:hover { opacity: 0.85; filter: grayscale(0%); }
         .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); border: 3px solid var(--accent-blue); transform: scale(1.02); }
         .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
-        .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
-        .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-blue); }
-        
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--slot-border); }
-        .slot:last-child { border-bottom: none; }
-        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid var(--border-color); }
-        .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
-        .event-title { margin: 0; font-weight: 800; font-size: 18px; }
+        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
+        .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; }
+        .event-title { margin: 5px 0 0; font-weight: 800; font-size: 18px; }
         .guest-text { color: var(--accent-blue); font-size: 13px; font-weight: bold; margin-top: 5px; }
-        .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
-        .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: #64748b; font-size: 22px; }
+
+        /* MODAL (Pop-up) */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background: var(--section-bg); margin: 15% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; position: relative; }
+        .modal-btns { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .choice-btn { padding: 15px; border-radius: 12px; text-decoration: none; color: white; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .choice-btn.tw { background: var(--twitch-color); }
+        .choice-btn.yt { background: var(--youtube-color); }
+        .choice-btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: var(--text-color); }
 
         /* FOOTER */
         footer { margin-top: 50px; padding: 20px 0 40px; border-top: 1px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
-        .social-icons a { color: var(--social-color); font-size: 28px; transition: transform 0.2s, color 0.2s; text-decoration: none; }
+        .social-icons a { color: var(--social-color); font-size: 28px; transition: 0.2s; }
         .social-icons a:hover { transform: scale(1.2); color: var(--accent-blue); }
-        .legal-link { display: inline-flex; align-items: center; gap: 8px; color: var(--social-color); text-decoration: none; font-size: 14px; font-weight: bold; opacity: 0.8; transition: opacity 0.2s; }
-        .legal-link:hover { opacity: 1; text-decoration: underline; }
+        .legal-link { color: var(--social-color); text-decoration: none; font-size: 14px; font-weight: bold; opacity: 0.7; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
     </style>
@@ -95,41 +79,46 @@
 <header>
     <div class="theme-switch-wrapper">
         <span>☀️</span>
-        <label class="theme-switch" for="checkbox">
-            <input type="checkbox" id="checkbox" />
-            <div class="slider"></div>
-        </label>
+        <label class="theme-switch" for="checkbox"><input type="checkbox" id="checkbox" /><div class="slider"></div></label>
         <span>🌙</span>
     </div>
     <h1><span>OutburstOne</span> Streamplan</h1>
-    <div id="status-container">
-        Aktueller Wochenplan: <span id="week-range">Lädt...</span>
-    </div>
+    <div id="status-container">Aktueller Wochenplan: <span id="week-range">Lädt...</span></div>
 </header>
 
 <main id="plan-container"></main>
 
+<div id="multiModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 style="margin-top:0;">Wo möchtest du zuschauen?</h2>
+        <div class="modal-btns">
+            <a id="modalTwitch" href="#" target="_blank" class="choice-btn tw"><i class="fab fa-twitch"></i> Twitch</a>
+            <a id="modalYoutube" href="#" target="_blank" class="choice-btn yt"><i class="fab fa-youtube"></i> YouTube</a>
+        </div>
+    </div>
+</div>
+
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
-        <a href="https://instagram.com/DEIN_NAME" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://x.com/DEIN_NAME" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://youtube.com/@DEIN_NAME" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://twitch.tv/outburstone" target="_blank"><i class="fab fa-twitch"></i></a>
+        <a href="https://instagram.com/DEIN_NAME" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@DEIN_NAME" target="_blank"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/DEIN_NAME" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://youtube.com/@DEIN_NAME" target="_blank"><i class="fab fa-youtube"></i></a>
     </div>
     <div style="margin-top: 10px;">
-        <a href="DEIN_LINK" target="_blank" class="legal-link">
-            <i class="fas fa-file-signature"></i> Impressum/Datenschutz
-        </a>
+        <a href="DEIN_LINK" target="_blank" class="legal-link"><i class="fas fa-file-signature"></i> Impressum/Datenschutz</a>
     </div>
 </footer>
 
 <script>
-    const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+    // THEME SWITCH
+    const toggleSwitch = document.querySelector('#checkbox');
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme) {
         document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') { toggleSwitch.checked = true; }
+        if (currentTheme === 'dark') toggleSwitch.checked = true;
     }
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
@@ -137,14 +126,22 @@
         localStorage.setItem('theme', theme);
     });
 
+    // MODAL LOGIC
+    function openModal(twitchUrl, youtubeUrl) {
+        document.getElementById('modalTwitch').href = twitchUrl;
+        document.getElementById('modalYoutube').href = youtubeUrl;
+        document.getElementById('multiModal').style.display = "block";
+    }
+    function closeModal() { document.getElementById('multiModal').style.display = "none"; }
+    window.onclick = function(event) { if (event.target == document.getElementById('multiModal')) closeModal(); }
+
+    // DATE & DATA
     function setWeekDisplay() {
         const curr = new Date();
-        const day = curr.getDay();
-        const diff = curr.getDate() - day + (day === 0 ? -6 : 1); 
-        const firstday = new Date(new Date().setDate(diff));
-        const lastday = new Date(new Date().setDate(diff + 6));
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        document.getElementById('week-range').innerText = `${firstday.toLocaleDateString('de-DE', options)} - ${lastday.toLocaleDateString('de-DE', options)}`;
+        const diff = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1); 
+        const first = new Date(new Date().setDate(diff));
+        const last = new Date(new Date().setDate(diff + 6));
+        document.getElementById('week-range').innerText = `${first.toLocaleDateString('de-DE')} - ${last.toLocaleDateString('de-DE')}`;
     }
 
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
@@ -156,7 +153,7 @@
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
-        const heute = new Date(); heute.setHours(0,0,0,0);
+        const heute = new Date().toLocaleDateString('de-DE');
         let lastDate = "";
 
         rows.forEach(row => {
@@ -167,57 +164,46 @@
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
             if (datumStr !== lastDate) {
-                const parts = datumStr.split('.');
-                const termin = new Date(parts[2], parts[1]-1, parts[0]); termin.setHours(0,0,0,0);
                 const section = document.createElement('section');
-                if (termin.getTime() === heute.getTime()) section.className = 'today';
-                else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
-                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="datum-text">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
+                if (datumStr === heute) section.className = 'today';
+                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:15px;color:var(--accent-blue);">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
 
-            const currentSection = container.lastElementChild;
-            const slotsDiv = currentSection.querySelector('.slots');
-            const statusArea = currentSection.querySelector('.status-area');
+            const slotsDiv = container.lastElementChild.querySelector('.slots');
+            const statusArea = container.lastElementChild.querySelector('.status-area');
 
-            let liveType = "";
-            let liveLink = "https://twitch.tv/outburstone";
+            // LIVE LOGIK
+            let tUrl = "https://twitch.tv/outburstone";
+            let yUrl = "https://youtube.com/@DEIN_KANAL/live";
 
-            if (status === 'live') liveType = "twitch";
-            else if (status === 'live-yt') liveType = "youtube";
-            else if (status === 'live-both') liveType = "both";
-            else if (status === "" && link && link.toLowerCase().includes("youtube")) {
-                liveType = "youtube";
-                liveLink = link;
-            }
-
-            if (liveType !== "") {
-                let btnLabel = "JETZT LIVE<br>AUF TWITCH";
-                let btnBg = "var(--twitch-color)";
+            if (status.includes('live')) {
+                let btn = document.createElement('a');
+                btn.className = 'live-tag-badge';
+                btn.innerHTML = `<div class="dot"></div><span>JETZT LIVE<br>`;
                 
-                if (liveType === "youtube") {
-                    btnLabel = "JETZT LIVE<br>AUF YOUTUBE";
-                    btnBg = "var(--youtube-color)";
-                    if (link) liveLink = link;
-                } else if (liveType === "both") {
-                    btnLabel = "JETZT LIVE<br>ÜBERALL";
-                    btnBg = "var(--multi-gradient)";
+                if (status === 'live') {
+                    btn.style.background = "var(--twitch-color)";
+                    btn.href = tUrl; btn.target = "_blank";
+                    btn.innerHTML += `AUF TWITCH</span>`;
+                } else if (status === 'live-yt' || (status === "" && link.includes("youtube"))) {
+                    btn.style.background = "var(--youtube-color)";
+                    btn.href = (link && link !== 'null') ? link : yUrl; btn.target = "_blank";
+                    btn.innerHTML += `AUF YOUTUBE</span>`;
+                } else if (status === 'live-both') {
+                    btn.style.background = "var(--multi-gradient)";
+                    btn.innerHTML += `ÜBERALL</span>`;
+                    btn.onclick = (e) => { e.preventDefault(); openModal(tUrl, (link && link !== 'null' ? link : yUrl)); };
                 }
-
-                statusArea.innerHTML = `
-                    <a href="${liveLink}" target="_blank" class="live-tag-badge" style="background:${btnBg};">
-                        <div class="dot"></div><span>${btnLabel}</span>
-                    </a>`;
+                statusArea.appendChild(btn);
             }
 
             if (status === 'offday') {
-                slotsDiv.innerHTML = `<div class="offday-container">❄️ STREAMFREI ❄️</div>`;
+                slotsDiv.innerHTML = `<div style="padding:40px;text-align:center;width:100%;font-weight:900;color:#64748b;font-size:22px;">❄️ STREAMFREI ❄️</div>`;
             } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
-                const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
-                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div class="guest-text">👥 Heute mit ${gaeste}</div>` : '';
                 const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
-                slotsDiv.insertAdjacentHTML('beforeend', `<div class="slot"><img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg"><div class="slot-body"><div class="time-badge">${zeit} Uhr</div><p class="event-title">${titel}</p>${guestHTML} ${linkHTML}</div></div>`);
+                slotsDiv.insertAdjacentHTML('beforeend', `<div class="slot"><img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg"><div class="slot-body"><div class="time-badge">${zeit} Uhr</div><p class="event-title">${titel}</p>${gaeste && gaeste!=='null' ? `<div class="guest-text">👥 Heute mit ${gaeste}</div>` : ''}${link && link!=='null' ? `<a href="${link}" target="_blank" class="btn-link" style="background:var(--action-color);color:white;text-decoration:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:bold;margin-top:10px;display:inline-block;">📺 VIDEO ANSEHEN</a>` : ''}</div></div>`);
             }
         });
     });
