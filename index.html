@@ -52,7 +52,6 @@
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.4s ease; }
         
-        /* Korrektur Vergangene Tage */
         .past-day { opacity: 0.4 !important; filter: grayscale(100%); }
         .past-day:hover { opacity: 0.9 !important; filter: grayscale(0%) !important; transform: translateY(-3px); }
         .past-day.glow-twitch, .past-day.glow-yt, .past-day.glow-kick, .past-day.glow-multi { animation: none !important; border-color: var(--border-color) !important; }
@@ -155,7 +154,7 @@
         <a href="https://x.com/DEIN_NAME" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
     </div>
     <div class="legal-btn-container">
-        <a href="DEIN_LINK_ZU_IMPRESSUM" class="legal-btn">Impressum / Datenschutz</a>
+        <a href="DEIN_LINK_ZU_DATENSCHUTZ" class="legal-btn">Impressum / Datenschutz</a>
     </div>
 </footer>
 
@@ -287,16 +286,20 @@
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
             } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
                 let imageUrl;
-                if (spielID.toLowerCase().startsWith('http')) {
-                    imageUrl = spielID;
+                let cleanID = spielID.replace(/["']/g, "").trim();
+
+                if (cleanID.toLowerCase().startsWith('http')) {
+                    imageUrl = cleanID;
                 } else {
-                    const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
+                    const finalImgID = (cleanID && !isNaN(cleanID)) ? cleanID : '509658';
                     imageUrl = `https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg`;
                 }
 
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="${imageUrl}" onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
+                        <img src="${imageUrl}" 
+                             referrerpolicy="no-referrer"
+                             onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
                         <div class="slot-body">
                             <div class="time-row">
                                 <div class="time-badge">${zeit} Uhr <i class="far fa-calendar-plus cal-btn" title="Google Kalender" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i></div>
