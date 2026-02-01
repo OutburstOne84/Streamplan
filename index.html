@@ -20,10 +20,13 @@
         }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; transition: 0.3s; }
         header, main, footer { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
+        
         header { padding: 60px 0 30px; }
         h1 { font-size: 48px; margin: 0; font-weight: 900; letter-spacing: -1px; }
         h1 span { display: block; font-size: 24px; color: var(--accent-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+        
         #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-top: 15px; font-weight: 700; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+
         .theme-switch-wrapper { position: absolute; right: 0; top: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
         .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
         .theme-switch input { display:none; }
@@ -31,39 +34,57 @@
         .slider:before { background-color: white; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-blue); }
         input:checked + .slider:before { transform: translateX(24px); }
-        section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .past-day { opacity: 0.4; filter: grayscale(100%); }
-        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
+
+        section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: 0.4s ease; }
+        
+        /* HOVER EFFEKT FÜR VERGANGENE TAGE */
+        .past-day { opacity: 0.4; filter: grayscale(100%); transform: scale(0.98); }
+        .past-day:hover { opacity: 1; filter: grayscale(0%); transform: scale(1); }
+        
+        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2); }
+
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; color: var(--text-color); }
         .weekday .date-label { font-size: 14px; color: var(--accent-blue); font-weight: 800; margin-top: 5px; }
+        
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); }
         .slot:last-child { border-bottom: none; }
         .slot img { width: 75px; height: 100px; object-fit: cover; border-radius: 12px; margin-right: 25px; background: #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block; }
         .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
+
         .live-tag-badge { background: var(--twitch-color); color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; text-decoration: none; animation: pulse 1.5s infinite; }
+        
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
         .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; transition: 0.3s; }
+        .social-icons a:hover { transform: translateY(-5px); filter: brightness(1.2); }
+        
         .tw { background-color: var(--twitch-color); }
         .ki { background-color: var(--kick-color); color: black !important; }
         .yt { background-color: var(--youtube-color); }
         .ig { background-color: var(--insta-color); }
         .tt { background-color: var(--tiktok-color); }
         .x  { background-color: var(--x-color); }
+
         .legal-btn { display: inline-block; padding: 10px 25px; border: 2px solid var(--border-color); border-radius: 50px; color: var(--text-color); text-decoration: none; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; margin-top: 20px; }
+        .legal-btn:hover { background: var(--accent-blue); color: white; }
+
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
 </head>
 <body>
+
 <header>
     <div class="theme-switch-wrapper">☀️ <label class="theme-switch"><input type="checkbox" id="checkbox" /><div class="slider"></div></label> 🌙</div>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
     <div id="week-range">Lädt...</div>
 </header>
+
 <main id="plan-container"></main>
+
 <footer>
     <div class="social-icons">
         <a href="https://twitch.tv/outburstone" class="tw"><i class="fab fa-twitch"></i></a>
@@ -75,6 +96,7 @@
     </div>
     <a href="#" class="legal-btn">Impressum & Datenschutz</a>
 </footer>
+
 <script>
     const toggleSwitch = document.querySelector('#checkbox');
     toggleSwitch.addEventListener('change', (e) => {
@@ -107,8 +129,10 @@
                 const p = datumStr.split('.');
                 const termin = new Date(p[2], p[1]-1, p[0]);
                 const heute = new Date(); heute.setHours(0,0,0,0);
-                if (termin.getTime() === heute.getTime()) section.className = 'today';
-                else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
+                
+                if (termin.getTime() === heute.getTime()) section.classList.add('today');
+                else if (termin.getTime() < heute.getTime()) section.classList.add('past-day');
+                
                 section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="date-label">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
@@ -129,11 +153,8 @@
 
                 if (val.toLowerCase().startsWith('http')) {
                     finalImg = val;
-                } else if (isNaN(val) && val.length > 0) {
-                    // Falls Name statt ID
-                    finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${encodeURIComponent(val)}-144x192.jpg`;
                 } else {
-                    const id = (val && !isNaN(val)) ? val : '509658';
+                    const id = (val && !isNaN(val)) ? val : '509658'; // Fallback auf Just Chatting
                     finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
 
