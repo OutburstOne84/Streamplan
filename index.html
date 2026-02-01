@@ -33,12 +33,23 @@
         h1 { font-size: 45px; color: #1a2a40; margin: 0; }
         h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
 
-        /* Datums-Zeile oben */
+        /* Datums-Badge oben im gleichen Look wie die Uhrzeit */
         #status-container {
-            margin-top: 10px;
+            margin-top: 15px;
+            font-size: 16px;
             font-weight: bold;
-            color: var(--accent-blue);
-            font-size: 18px;
+            color: var(--text-color);
+        }
+
+        #week-range {
+            background: var(--badge-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 15px;
+            display: inline-block;
+            margin-left: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: white; overflow: hidden; text-align: left; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
@@ -72,21 +83,20 @@
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
     <div id="status-container">
-        Aktueller Wochenplan: <span id="week-range">Lädt...</span>
+        Aktueller Wochenplan: <span id="week-range">00.00. - 00.00.0000</span>
     </div>
 </header>
 
 <main id="plan-container"></main>
 
 <script>
-    // Funktion zur Berechnung der aktuellen Woche (Mo - So)
     function setWeekDisplay() {
         const curr = new Date();
-        const first = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1); // Montag berechnen
-        const last = first + 6; // Sonntag berechnen
-
-        const firstday = new Date(curr.setDate(first));
-        const lastday = new Date(curr.setDate(last));
+        const day = curr.getDay();
+        const diff = curr.getDate() - day + (day === 0 ? -6 : 1); 
+        
+        const firstday = new Date(new Date().setDate(diff));
+        const lastday = new Date(new Date().setDate(diff + 6));
 
         const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
         const rangeText = `${firstday.toLocaleDateString('de-DE', options)} - ${lastday.toLocaleDateString('de-DE', options)}`;
@@ -96,7 +106,7 @@
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
 
-    setWeekDisplay(); // Datum direkt beim Start berechnen
+    setWeekDisplay();
 
     fetch(url).then(res => res.text()).then(data => {
         const rows = data.split('\n').slice(1);
@@ -113,7 +123,6 @@
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 4) return;
 
-            // Spalten: A=Tag, B=Datum, C=Zeit, D=Titel, E=SpielID, F=Status, G=Gäste, H=Link
             const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
