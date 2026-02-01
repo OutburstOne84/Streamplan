@@ -14,47 +14,34 @@
 
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--background-gradient-1), var(--background-gradient-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; }
         header, main { width: 95%; max-width: 850px; margin: auto; text-align: center; }
-        header { padding: 30px 0; position: relative; }
+        header { padding: 30px 0; }
 
-        /* LIVE BADGE DESIGN */
         #live-indicator {
-            display: none; /* Standardmäßig aus */
-            background: var(--live-red);
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-            animation: pulse 1.5s infinite;
-            margin-bottom: 20px;
+            display: none; background: var(--live-red); color: white; padding: 10px 25px; border-radius: 50px;
+            font-weight: 900; font-size: 16px; text-decoration: none; align-items: center; justify-content: center;
+            gap: 10px; box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); animation: pulse 1.5s infinite;
+            margin-bottom: 25px; border: 2px solid white;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
         }
 
-        .dot { width: 10px; height: 10px; background: white; border-radius: 50%; }
-
+        .dot { width: 12px; height: 12px; background: white; border-radius: 50%; }
         h1 { font-size: 45px; color: #301826; margin: 0; }
         h1 span { display: block; font-size: 28px; color: var(--accent-pink); font-weight: normal; }
 
-        /* TAGES-BOX */
         section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: white; overflow: hidden; text-align: left; box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
         .past-day { opacity: 0.5; filter: grayscale(50%); }
         .today { box-shadow: 0 0 35px var(--accent-pink); border: 3px solid var(--accent-pink); transform: scale(1.02); }
 
-        .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
         .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-pink); }
 
-        .slots { flex: 1; display: flex; flex-direction: column; }
+        .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f0f0; }
         .slot:last-child { border-bottom: none; }
         .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; }
@@ -65,8 +52,9 @@
         .event-subtitle { display: block; font-weight: normal; font-size: 14px; color: #666; }
         
         .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
-
-        .offday-text { padding: 40px; text-align: center; width: 100%; font-weight: bold; color: var(--accent-pink); font-size: 18px; }
+        
+        /* SPEZIAL-STYLE FÜR OFFDAY */
+        .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: var(--accent-pink); font-size: 22px; letter-spacing: 1px; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
     </style>
@@ -78,29 +66,22 @@
         <div class="dot"></div> JETZT LIVE AUF TWITCH
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
-    <p id="status-msg">Pläne werden geladen...</p>
+    <p id="status-msg">Lade Plan-Daten...</p>
 </header>
 
 <main id="plan-container"></main>
 
 <script>
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
-    // Wir fragen das ganze Blatt ab, um auch die Live-Zelle zu finden
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
 
     fetch(url).then(res => res.text()).then(data => {
-        // Check auf LIVE-Status (sucht das Wort "LIVE" irgendwo in der Tabelle)
-        if (data.includes(",LIVE") || data.includes("LIVE,")) {
-            document.getElementById('live-indicator').style.display = 'inline-flex';
-        } else {
-            document.getElementById('live-indicator').style.display = 'none';
-        }
-
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
         const heute = new Date(); heute.setHours(0,0,0,0);
 
+        let isLiveNow = false;
         let lastDate = "";
         let currentSlotsDiv = null;
 
@@ -111,10 +92,13 @@
 
             const [tag, datumStr, zeit, titel, untertitel, spielID, status, gaeste, link] = clean;
 
+            if (status && status.toLowerCase() === 'live') isLiveNow = true;
+
             if (datumStr !== lastDate) {
                 const parts = datumStr.split('.');
                 const termin = new Date(parts[2], parts[1]-1, parts[0]); termin.setHours(0,0,0,0);
                 const section = document.createElement('section');
+                
                 if (termin.getTime() === heute.getTime()) section.className = 'today';
                 else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
 
@@ -124,14 +108,28 @@
                 lastDate = datumStr;
             }
 
-            if (status && status.toLowerCase().includes('offday')) {
-                currentSlotsDiv.innerHTML = `<div class="offday-text">✨ HEUTE STREAMFREI ✨</div>`;
+            // Prüfung: Wenn der Status "offday" ist, wird kein Slot-Design geladen
+            if (status && status.toLowerCase() === 'offday') {
+                currentSlotsDiv.innerHTML = `<div class="offday-container">✨ STREAMFREI ✨</div>`;
             } else {
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
-                const slotHTML = `<div class="slot"><img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg"><div class="slot-body"><div class="time-badge">${zeit} Uhr</div><p class="event-title">${titel} <span class="event-subtitle">${untertitel}</span></p>${gaeste ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : ''}${linkHTML}</div></div>`;
+                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
+                
+                const slotHTML = `
+                    <div class="slot">
+                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg'">
+                        <div class="slot-body">
+                            <div class="time-badge">${zeit} Uhr</div>
+                            <p class="event-title">${titel} <span class="event-subtitle">${untertitel}</span></p>
+                            ${guestHTML}
+                            ${linkHTML}
+                        </div>
+                    </div>`;
                 currentSlotsDiv.insertAdjacentHTML('beforeend', slotHTML);
             }
         });
+
+        document.getElementById('live-indicator').style.display = isLiveNow ? 'inline-flex' : 'none';
         document.getElementById('status-msg').innerText = "Wochenübersicht";
     });
 </script>
