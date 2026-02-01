@@ -44,7 +44,14 @@
         .past-day { opacity: 0.4; filter: grayscale(100%); }
         .past-day:hover { opacity: 1; filter: grayscale(0%); transform: translateY(-3px); }
         
-        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2); }
+        .today { 
+    border: 4px solid var(--accent-blue); /* Dickerer Rahmen */
+    transform: scale(1.03); /* Etwas stärker vergrößert */
+    z-index: 10; 
+    /* Ein blauer Leuchteffekt (Glow) */
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5), 0 10px 40px rgba(0, 0, 0, 0.15); 
+    position: relative;
+}
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; color: var(--text-color); }
