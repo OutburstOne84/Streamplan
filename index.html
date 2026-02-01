@@ -10,9 +10,12 @@
             --bg-1: #f0f7ff; --bg-2: #c7d9ff; 
             --text-color: #1a2a40; --accent-blue: #3b82f6; --border-color: #93c5fd; 
             --section-bg: #ffffff; --date-bg: #e0efff; --badge-color: #2563eb; 
-            --action-color: #1d4ed8; --live-red: #ff0000; --slot-border: #f0f4f8;
+            --action-color: #1d4ed8; --slot-border: #f0f4f8;
             --social-color: #1e3a8a;
-            --twitch-purple: #9146FF;
+            /* Live Farben */
+            --twitch-color: #9146FF;
+            --youtube-color: #FF0000;
+            --multi-gradient: linear-gradient(90deg, #9146FF, #FF0000);
         }
 
         [data-theme="dark"] {
@@ -47,7 +50,7 @@
             color: white; padding: 8px 12px; border-radius: 12px;
             font-weight: 900; font-size: 13px; display: inline-flex; flex-direction: column; 
             align-items: center; gap: 5px; margin-top: 15px; text-decoration: none; 
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); animation: pulse-l 1.5s infinite; border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); animation: pulse-l 1.5s infinite; border: 2px solid white;
         }
         @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
@@ -57,7 +60,7 @@
         #status-container { margin-top: 15px; font-size: 16px; font-weight: bold; }
         #week-range { background: var(--badge-color); color: white; padding: 5px 15px; border-radius: 8px; display: inline-block; margin-left: 5px; }
 
-        /* CONTENT */
+        /* SECTIONS */
         section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .past-day { opacity: 0.5; filter: grayscale(80%); transition: 0.3s; }
         .past-day:hover { opacity: 0.85; filter: grayscale(0%); }
@@ -65,6 +68,7 @@
         .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
         .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-blue); }
+        
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--slot-border); }
         .slot:last-child { border-bottom: none; }
@@ -121,7 +125,6 @@
 </footer>
 
 <script>
-    // THEME SWITCH
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme) {
@@ -134,7 +137,6 @@
         localStorage.setItem('theme', theme);
     });
 
-    // DATE LOGIC
     function setWeekDisplay() {
         const curr = new Date();
         const day = curr.getDay();
@@ -179,15 +181,12 @@
             const slotsDiv = currentSection.querySelector('.slots');
             const statusArea = currentSection.querySelector('.status-area');
 
-            // SMARTE LIVE-LOGIK
             let liveType = "";
-            let liveLink = "https://twitch.tv/outburstone"; // Default
+            let liveLink = "https://twitch.tv/outburstone";
 
-            // 1. Check Spalte F
             if (status === 'live') liveType = "twitch";
             else if (status === 'live-yt') liveType = "youtube";
             else if (status === 'live-both') liveType = "both";
-            // 2. Automatik Check (falls Spalte F leer ist, aber Link YouTube enthält)
             else if (status === "" && link && link.toLowerCase().includes("youtube")) {
                 liveType = "youtube";
                 liveLink = link;
@@ -195,19 +194,19 @@
 
             if (liveType !== "") {
                 let btnLabel = "JETZT LIVE<br>AUF TWITCH";
-                let btnColor = "var(--live-red)";
+                let btnBg = "var(--twitch-color)";
                 
                 if (liveType === "youtube") {
                     btnLabel = "JETZT LIVE<br>AUF YOUTUBE";
-                    btnColor = "#ff0000";
+                    btnBg = "var(--youtube-color)";
                     if (link) liveLink = link;
                 } else if (liveType === "both") {
                     btnLabel = "JETZT LIVE<br>ÜBERALL";
-                    btnColor = "linear-gradient(90deg, #9146FF, #FF0000)";
+                    btnBg = "var(--multi-gradient)";
                 }
 
                 statusArea.innerHTML = `
-                    <a href="${liveLink}" target="_blank" class="live-tag-badge" style="background:${btnColor};">
+                    <a href="${liveLink}" target="_blank" class="live-tag-badge" style="background:${btnBg};">
                         <div class="dot"></div><span>${btnLabel}</span>
                     </a>`;
             }
