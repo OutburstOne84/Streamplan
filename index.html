@@ -44,7 +44,6 @@
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block; }
         .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
         .live-tag-badge { background: var(--twitch-color); color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; text-decoration: none; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
         .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; transition: 0.3s; }
@@ -125,14 +124,15 @@
             if (status === 'offday') {
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:20px;">❄️ STREAMFREI ❄️</div>`;
             } else {
-                // BILD-LOGIK: Nur ID oder URL
                 let finalImg;
-                let val = spielVal.replace(/[^0-9a-zA-Z.:/_-]/g, "").trim();
+                let val = spielVal.trim();
 
-                if (val.startsWith('http')) {
+                if (val.toLowerCase().startsWith('http')) {
                     finalImg = val;
+                } else if (isNaN(val) && val.length > 0) {
+                    // Falls Name statt ID
+                    finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${encodeURIComponent(val)}-144x192.jpg`;
                 } else {
-                    // Wenn es eine reine Zahl ist oder leer, nutze die Twitch-URL-Struktur
                     const id = (val && !isNaN(val)) ? val : '509658';
                     finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
