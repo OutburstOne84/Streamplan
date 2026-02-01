@@ -65,7 +65,7 @@
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 120px; }
         .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); position: relative; }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 95px; height: 120px; object-fit: cover; border-radius: 12px; margin-right: 25px; }
+        .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; background: #eee; }
         
         .time-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
@@ -97,7 +97,7 @@
 
         /* FOOTER */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify(center); gap: 15px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
         .social-icons a { color: var(--social-color); font-size: 22px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(0,0,0,0.05); text-decoration: none; }
         
         .social-icons a.tw:hover { background: #9146FF; color: white; }
@@ -128,7 +128,7 @@
         <span>🌙</span>
     </div>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
-    <div id="status-container">Aktueller Wochenplan: <span id="week-range">Lädt...</span></div>
+    <div id="status-container">Wochenplan: <span id="week-range">Lädt...</span></div>
 </header>
 
 <main id="plan-container"></main>
@@ -155,7 +155,7 @@
         <a href="https://x.com/DEIN_NAME" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
     </div>
     <div class="legal-btn-container">
-        <a href="DEIN_LINK" class="legal-btn">Impressum / Datenschutz</a>
+        <a href="DEIN_LINK_ZU_IMPRESSUM" class="legal-btn">Impressum / Datenschutz</a>
     </div>
 </footer>
 
@@ -215,7 +215,7 @@
         container.innerHTML = '';
         const heuteVergleich = new Date(); heuteVergleich.setHours(0,0,0,0);
         
-        let allDates = []; // Array für alle gefundenen Daten
+        let allDates = [];
         let lastDate = "";
 
         rows.forEach(row => {
@@ -225,7 +225,6 @@
             const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
-            // Datum für die Bereichsanzeige sammeln
             if (datumStr) {
                 const p = datumStr.split('.');
                 allDates.push(new Date(p[2], p[1]-1, p[0]));
@@ -236,10 +235,8 @@
                 const parts = datumStr.split('.');
                 const termin = new Date(parts[2], parts[1]-1, parts[0]);
                 termin.setHours(0,0,0,0);
-                
                 if (termin.getTime() === heuteVergleich.getTime()) section.className = 'today';
                 else if (termin.getTime() < heuteVergleich.getTime()) section.className = 'past-day';
-                
                 section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:14px;color:var(--accent-blue);font-weight:700;">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
@@ -249,7 +246,7 @@
             const statusArea = currentSection.querySelector('.status-area');
             const slotsDiv = currentSection.querySelector('.slots');
 
-            // --- HIER FOLGT DIE LIVE-LOGIK (Bleibt wie zuvor) ---
+            // LIVE LOGIK
             if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
                 btn.className = 'live-tag-badge';
@@ -276,7 +273,6 @@
                     glowClass = "glow-multi";
                     btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
                 }
-
                 if (currentSection.classList.contains('today')) {
                     currentSection.classList.add(glowClass);
                     document.title = `🔴 LIVE: ${titel}`;
@@ -286,53 +282,42 @@
                 statusArea.appendChild(btn);
             }
 
-            // --- SLOT ANZEIGE ---
+            // SLOT BILD LOGIK (ID ODER LINK)
             if (status === 'offday') {
-             // --- NEUE LOGIK FÜR MANUELLE BILDER ODER IDs ---
-let imageUrl;
-if (spielID.toLowerCase().startsWith('http')) {
-    // Wenn ein Link (http...) im Sheet steht, nimm diesen
-    imageUrl = spielID;
-} else {
-    // Wenn eine Zahl (ID) drin steht, nimm den Twitch-Link
-    const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
-    imageUrl = `https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg`;
-}
+                slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
+            } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
+                let imageUrl;
+                if (spielID.toLowerCase().startsWith('http')) {
+                    imageUrl = spielID;
+                } else {
+                    const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
+                    imageUrl = `https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg`;
+                }
 
-slotsDiv.insertAdjacentHTML('beforeend', `
-    <div class="slot">
-        <img src="${imageUrl}" 
-             alt="Cover" 
-             onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
-        <div class="slot-body">
-            <div class="time-row">
-                <div class="time-badge">
-                    ${zeit} Uhr 
-                    <i class="far fa-calendar-plus cal-btn" title="Hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
-                </div>
-                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
-            </div>
-            <p class="event-title">${titel}</p>
-            ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
-        </div>
-    </div>`);
+                slotsDiv.insertAdjacentHTML('beforeend', `
+                    <div class="slot">
+                        <img src="${imageUrl}" onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
+                        <div class="slot-body">
+                            <div class="time-row">
+                                <div class="time-badge">${zeit} Uhr <i class="far fa-calendar-plus cal-btn" title="Google Kalender" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i></div>
+                                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
+                            </div>
+                            <p class="event-title">${titel}</p>
+                            ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
+                        </div>
+                    </div>`);
             }
         });
 
-        // DYNAMISCHE WOCHENANZEIGE (Header)
+        // WOCHENANZEIGE HEADER AKTUALISIEREN
         if (allDates.length > 0) {
-            allDates.sort((a, b) => a - b); // Sortieren nach Datum
+            allDates.sort((a, b) => a - b);
             const start = allDates[0].toLocaleDateString('de-DE');
             const end = allDates[allDates.length - 1].toLocaleDateString('de-DE');
             document.getElementById('week-range').innerText = `${start} - ${end}`;
         }
-        
         updateCountdowns();
     });
-
-    const d = new Date();
-    const di = d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1);
-    document.getElementById('week-range').innerText = `${new Date(new Date().setDate(di)).toLocaleDateString('de-DE')} - ${new Date(new Date().setDate(di+6)).toLocaleDateString('de-DE')}`;
 </script>
 </body>
 </html>
