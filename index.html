@@ -13,22 +13,17 @@
             --twitch-color: #9146FF; --youtube-color: #FF0000; --kick-color: #53fc18; 
             --insta-color: #E1306C; --tiktok-color: #000000; --x-color: #000000;
         }
-
         [data-theme="dark"] {
             --bg-1: #0f172a; --bg-2: #1e293b; --text-color: #f1f5f9; --accent-blue: #60a5fa; 
             --border-color: #334155; --section-bg: #1e293b; --date-bg: #334155; 
             --badge-color: #3b82f6; --slot-border: #475569;
         }
-
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; transition: 0.3s; }
         header, main, footer { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
-        
         header { padding: 60px 0 30px; }
         h1 { font-size: 48px; margin: 0; font-weight: 900; letter-spacing: -1px; }
         h1 span { display: block; font-size: 24px; color: var(--accent-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
-        
         #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-top: 15px; font-weight: 700; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
-
         .theme-switch-wrapper { position: absolute; right: 0; top: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
         .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
         .theme-switch input { display:none; }
@@ -36,81 +31,55 @@
         .slider:before { background-color: white; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-blue); }
         input:checked + .slider:before { transform: translateX(24px); }
-
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .past-day { opacity: 0.4; filter: grayscale(100%); }
         .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
-
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; color: var(--text-color); }
         .weekday .date-label { font-size: 14px; color: var(--accent-blue); font-weight: 800; margin-top: 5px; }
-        
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); }
         .slot:last-child { border-bottom: none; }
         .slot img { width: 75px; height: 100px; object-fit: cover; border-radius: 12px; margin-right: 25px; background: #eee; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block; }
         .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
-
         .live-tag-badge { background: var(--twitch-color); color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; text-decoration: none; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
         .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; transition: 0.3s; }
-        .social-icons a:hover { transform: translateY(-5px); filter: brightness(1.2); }
-        
         .tw { background-color: var(--twitch-color); }
         .ki { background-color: var(--kick-color); color: black !important; }
         .yt { background-color: var(--youtube-color); }
         .ig { background-color: var(--insta-color); }
         .tt { background-color: var(--tiktok-color); }
         .x  { background-color: var(--x-color); }
-
-        .legal-btn { 
-            display: inline-block; padding: 10px 25px; border: 2px solid var(--border-color); 
-            border-radius: 50px; color: var(--text-color); text-decoration: none; 
-            font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s; margin-top: 20px;
-        }
-        .legal-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); transform: scale(1.05); }
-
+        .legal-btn { display: inline-block; padding: 10px 25px; border: 2px solid var(--border-color); border-radius: 50px; color: var(--text-color); text-decoration: none; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; margin-top: 20px; }
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
 </head>
 <body>
-
 <header>
-    <div class="theme-switch-wrapper">
-        <span>☀️</span>
-        <label class="theme-switch" for="checkbox"><input type="checkbox" id="checkbox" /><div class="slider"></div></label>
-        <span>🌙</span>
-    </div>
+    <div class="theme-switch-wrapper">☀️ <label class="theme-switch"><input type="checkbox" id="checkbox" /><div class="slider"></div></label> 🌙</div>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
-    <div id="status-container">Wochenplan: <span id="week-range">Lädt...</span></div>
+    <div id="week-range">Lädt...</div>
 </header>
-
 <main id="plan-container"></main>
-
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone" class="tw" title="Twitch"><i class="fab fa-twitch"></i></a>
-        <a href="https://kick.com/outburstone" class="ki" title="Kick"><i class="fas fa-bolt"></i></a>
-        <a href="https://youtube.com/" class="yt" title="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://instagram.com/" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://x.com/" class="x" title="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://twitch.tv/outburstone" class="tw"><i class="fab fa-twitch"></i></a>
+        <a href="https://kick.com/outburstone" class="ki"><i class="fas fa-bolt"></i></a>
+        <a href="https://youtube.com/" class="yt"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/" class="ig"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/" class="tt"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/" class="x"><i class="fab fa-x-twitter"></i></a>
     </div>
     <a href="#" class="legal-btn">Impressum & Datenschutz</a>
 </footer>
-
 <script>
     const toggleSwitch = document.querySelector('#checkbox');
     toggleSwitch.addEventListener('change', (e) => {
-        const theme = e.target.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
+        document.documentElement.setAttribute('data-theme', e.target.checked ? 'dark' : 'light');
     });
 
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U';
@@ -120,15 +89,14 @@
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
-        const heute = new Date(); heute.setHours(0,0,0,0);
-        let allDates = [];
         let lastDate = "";
+        let allDates = [];
 
         rows.forEach(row => {
             const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
-            if (clean.length < 4) return;
-            const [tag, datumStr, zeit, titel, spielID, statusRaw] = clean;
+            if (clean.length < 5) return;
+            const [tag, datumStr, zeit, titel, spielVal, statusRaw] = clean;
 
             if (datumStr) {
                 const p = datumStr.split('.');
@@ -139,40 +107,39 @@
                 const section = document.createElement('section');
                 const p = datumStr.split('.');
                 const termin = new Date(p[2], p[1]-1, p[0]);
+                const heute = new Date(); heute.setHours(0,0,0,0);
                 if (termin.getTime() === heute.getTime()) section.className = 'today';
                 else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
-                
                 section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="date-label">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
 
-            const currentSection = container.lastElementChild;
-            const slotsDiv = currentSection.querySelector('.slots');
-            const statusArea = currentSection.querySelector('.status-area');
+            const slotsDiv = container.lastElementChild.querySelector('.slots');
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
             if (status === 'live') {
-                statusArea.innerHTML = `<a href="https://twitch.tv/outburstone" class="live-tag-badge">🔴 JETZT LIVE</a>`;
+                container.lastElementChild.querySelector('.status-area').innerHTML = `<a href="https://twitch.tv/outburstone" class="live-tag-badge">🔴 JETZT LIVE</a>`;
             }
 
             if (status === 'offday') {
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:20px;">❄️ STREAMFREI ❄️</div>`;
             } else {
+                // BILD-LOGIK: Nur ID oder URL
                 let finalImg;
-                // EXTRA-FIX FÜR GOOGLE SHEET LINKS + SEMIKOLON-ENTFERNUNG
-                let ultraCleanID = spielID.split(';')[0].replace(/[^\x20-\x7E]/g, "").replace(/["']/g, "").trim();
+                let val = spielVal.replace(/[^0-9a-zA-Z.:/_-]/g, "").trim();
 
-                if (ultraCleanID.toLowerCase().includes('http')) {
-                    finalImg = ultraCleanID;
+                if (val.startsWith('http')) {
+                    finalImg = val;
                 } else {
-                    const id = (ultraCleanID && !isNaN(ultraCleanID)) ? ultraCleanID : '509658';
+                    // Wenn es eine reine Zahl ist oder leer, nutze die Twitch-URL-Struktur
+                    const id = (val && !isNaN(val)) ? val : '509658';
                     finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
 
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="${finalImg}" referrerpolicy="no-referrer" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
+                        <img src="${finalImg}" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
                         <div class="slot-info">
                             <div class="time-badge">${zeit} Uhr</div>
                             <p class="event-title">${titel}</p>
@@ -180,7 +147,6 @@
                     </div>`);
             }
         });
-
         if (allDates.length > 0) {
             allDates.sort((a,b) => a-b);
             document.getElementById('week-range').innerText = `${allDates[0].toLocaleDateString('de-DE')} - ${allDates[allDates.length-1].toLocaleDateString('de-DE')}`;
