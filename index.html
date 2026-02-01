@@ -44,9 +44,7 @@
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f0f0; }
         .slot:last-child { border-bottom: none; }
-        
-        /* Das Bild verstecken, falls die Spiel-ID fehlt oder ungültig ist */
-        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; background: #fafafa; }
+        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; }
         
         .slot-body { flex: 1; }
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
@@ -54,7 +52,6 @@
         .event-subtitle { display: block; font-weight: normal; font-size: 14px; color: #666; }
         
         .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
-        
         .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: var(--accent-pink); font-size: 22px; letter-spacing: 1px; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
@@ -91,17 +88,22 @@
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 5) return;
 
-            const [tag, datumStr, zeit, titel, untertitel, spielID, status, gaeste, link] = clean;
+            // ZUORDNUNG BASIEREND AUF DEINER TABELLE (F = Status)
+            const tag = clean[0];
+            const datumStr = clean[1];
+            const zeit = clean[2];
+            const titel = clean[3];
+            const untertitel = clean[4];
+            const status = clean[5]; // Spalte F ist jetzt der Status!
+            const gaeste = clean[6]; // Spalte G
+            const link = clean[7];   // Spalte H
 
-            // Live-Check
             if (status && status.toLowerCase() === 'live') isLiveNow = true;
 
-            // Neuen Tag erstellen
             if (datumStr !== lastDate) {
                 const parts = datumStr.split('.');
                 const termin = new Date(parts[2], parts[1]-1, parts[0]); termin.setHours(0,0,0,0);
                 const section = document.createElement('section');
-                
                 if (termin.getTime() === heute.getTime()) section.className = 'today';
                 else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
 
@@ -111,21 +113,17 @@
                 lastDate = datumStr;
             }
 
-            // INHALT STEUERN
             if (status && status.toLowerCase() === 'offday') {
-                // Wenn Offday, dann überschreiben wir den Inhalt der Slots-Box komplett
                 currentSlotsDiv.innerHTML = `<div class="offday-container">✨ STREAMFREI ✨</div>`;
-            } else if (currentSlotsDiv.innerHTML.indexOf('STREAMFREI') === -1) {
-                // Nur hinzufügen, wenn der Tag nicht bereits auf "Streamfrei" gesetzt wurde
+            } else if (!currentSlotsDiv.innerHTML.includes('STREAMFREI')) {
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
                 const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
                 
-                // Falls SpielID nur eine Zahl ist, Bild laden. Falls leer, Standardbild nutzen.
-                const finalImg = (spielID && !isNaN(spielID)) ? `https://static-cdn.jtvnw.net/ttv-boxart/${spielID}-144x192.jpg` : 'https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';
-
+                // Wir nutzen den Titel oder Untertitel, um eine Spiel-ID zu "raten", falls keine da ist
+                // Standard: Just Chatting (509658)
                 const slotHTML = `
                     <div class="slot">
-                        <img src="${finalImg}" alt="">
+                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg">
                         <div class="slot-body">
                             <div class="time-badge">${zeit || '??:??'} Uhr</div>
                             <p class="event-title">${titel || 'Stream'} <span class="event-subtitle">${untertitel || ''}</span></p>
