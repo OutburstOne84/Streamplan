@@ -36,7 +36,6 @@
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; transition: 0.3s; }
         
-        /* HEUTE MIT STARKEM GLOW */
         .today { 
             border: 5px solid var(--accent-blue); 
             transform: scale(1.04); 
@@ -45,7 +44,6 @@
             position: relative;
         }
 
-        /* VERGANGENHEIT MIT HOVER */
         .past-day { opacity: 0.3; filter: grayscale(100%); }
         .past-day:hover { opacity: 0.7; filter: grayscale(40%); }
 
@@ -61,10 +59,18 @@
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; }
         .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
 
+        .live-tag-badge { background: var(--twitch-color); color: white; padding: 8px 14px; border-radius: 12px; font-weight: 900; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; margin-top: 15px; text-decoration: none; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; }
-        .tw { background-color: var(--twitch-color); } .ki { background-color: var(--kick-color); color: black !important; } .yt { background-color: var(--youtube-color); }
+        .social-icons { display: flex; justify-content: center; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+        .social-icons a { font-size: 20px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: white; text-decoration: none; transition: 0.3s; }
+        .tw { background-color: var(--twitch-color); }
+        .ki { background-color: var(--kick-color); color: black !important; }
+        .yt { background-color: var(--youtube-color); }
+        .ig { background-color: var(--insta-color); }
+        .tt { background-color: var(--tiktok-color); }
+        .x  { background-color: var(--x-color); }
 
         .legal-btn { display: inline-block; padding: 10px 25px; border: 2px solid var(--border-color); border-radius: 50px; color: var(--text-color); text-decoration: none; font-size: 12px; font-weight: 800; text-transform: uppercase; }
 
@@ -84,6 +90,9 @@
         <a href="https://twitch.tv/outburstone" class="tw"><i class="fab fa-twitch"></i></a>
         <a href="https://kick.com/outburstone" class="ki"><i class="fas fa-bolt"></i></a>
         <a href="https://youtube.com/" class="yt"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/" class="ig"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/" class="tt"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/" class="x"><i class="fab fa-x-twitter"></i></a>
     </div>
     <a href="#" class="legal-btn">Impressum & Datenschutz</a>
 </footer>
@@ -129,8 +138,15 @@
                 lastDate = datumStr;
             }
 
-            const slotsDiv = container.lastElementChild.querySelector('.slots');
+            const currentSection = container.lastElementChild;
+            const slotsDiv = currentSection.querySelector('.slots');
+            const statusArea = currentSection.querySelector('.status-area');
             const status = statusRaw ? statusRaw.toLowerCase() : "";
+
+            // LIVE BUTTON WIEDER DA
+            if (status === 'live') {
+                statusArea.innerHTML = `<a href="https://twitch.tv/outburstone" class="live-tag-badge">🔴 JETZT LIVE</a>`;
+            }
 
             if (status === 'offday') {
                 slotsDiv.style.display = "flex";
@@ -140,7 +156,11 @@
             } else {
                 let finalImg;
                 let val = spielVal.trim();
-                if (val.toLowerCase().startsWith('http')) {
+                
+                // DISPATCH SPEZIAL-CHECK
+                if (val.toLowerCase() === 'dispatch' || val === '2016584281') {
+                    finalImg = 'https://images2.imgbox.com/39/10/UeIeAn21_o.jpg';
+                } else if (val.toLowerCase().startsWith('http')) {
                     finalImg = val;
                 } else {
                     const id = (val && !isNaN(val)) ? val : '509658';
