@@ -12,6 +12,7 @@
             --section-bg: #ffffff; --date-bg: #e0efff; --badge-color: #2563eb; 
             --action-color: #1d4ed8; --live-red: #ff0000; --slot-border: #f0f4f8;
             --social-color: #1e3a8a;
+            --twitch-purple: #9146FF;
         }
 
         [data-theme="dark"] {
@@ -41,12 +42,12 @@
         input:checked + .slider { background-color: var(--accent-blue); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* LIVE BADGE */
+        /* LIVE BADGES */
         .live-tag-badge {
-            background: var(--live-red); color: white; padding: 8px 12px; border-radius: 12px;
+            color: white; padding: 8px 12px; border-radius: 12px;
             font-weight: 900; font-size: 13px; display: inline-flex; flex-direction: column; 
             align-items: center; gap: 5px; margin-top: 15px; text-decoration: none; 
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); animation: pulse-l 1.5s infinite; border: 2px solid white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); animation: pulse-l 1.5s infinite; border: 2px solid white;
         }
         @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
@@ -74,12 +75,11 @@
         .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
         .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: #64748b; font-size: 22px; }
 
-        /* SOCIAL MEDIA & LEGAL FOOTER */
+        /* FOOTER */
         footer { margin-top: 50px; padding: 20px 0 40px; border-top: 1px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; }
         .social-icons a { color: var(--social-color); font-size: 28px; transition: transform 0.2s, color 0.2s; text-decoration: none; }
         .social-icons a:hover { transform: scale(1.2); color: var(--accent-blue); }
-        
         .legal-link { display: inline-flex; align-items: center; gap: 8px; color: var(--social-color); text-decoration: none; font-size: 14px; font-weight: bold; opacity: 0.8; transition: opacity 0.2s; }
         .legal-link:hover { opacity: 1; text-decoration: underline; }
 
@@ -179,8 +179,37 @@
             const slotsDiv = currentSection.querySelector('.slots');
             const statusArea = currentSection.querySelector('.status-area');
 
-            if (status === 'live') {
-                statusArea.innerHTML = `<a href="https://twitch.tv/outburstone" target="_blank" class="live-tag-badge"><div class="dot"></div><span>JETZT LIVE<br>AUF TWITCH</span></a>`;
+            // SMARTE LIVE-LOGIK
+            let liveType = "";
+            let liveLink = "https://twitch.tv/outburstone"; // Default
+
+            // 1. Check Spalte F
+            if (status === 'live') liveType = "twitch";
+            else if (status === 'live-yt') liveType = "youtube";
+            else if (status === 'live-both') liveType = "both";
+            // 2. Automatik Check (falls Spalte F leer ist, aber Link YouTube enthält)
+            else if (status === "" && link && link.toLowerCase().includes("youtube")) {
+                liveType = "youtube";
+                liveLink = link;
+            }
+
+            if (liveType !== "") {
+                let btnLabel = "JETZT LIVE<br>AUF TWITCH";
+                let btnColor = "var(--live-red)";
+                
+                if (liveType === "youtube") {
+                    btnLabel = "JETZT LIVE<br>AUF YOUTUBE";
+                    btnColor = "#ff0000";
+                    if (link) liveLink = link;
+                } else if (liveType === "both") {
+                    btnLabel = "JETZT LIVE<br>ÜBERALL";
+                    btnColor = "linear-gradient(90deg, #9146FF, #FF0000)";
+                }
+
+                statusArea.innerHTML = `
+                    <a href="${liveLink}" target="_blank" class="live-tag-badge" style="background:${btnColor};">
+                        <div class="dot"></div><span>${btnLabel}</span>
+                    </a>`;
             }
 
             if (status === 'offday') {
