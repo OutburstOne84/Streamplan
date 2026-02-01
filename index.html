@@ -16,30 +16,34 @@
         header, main { width: 95%; max-width: 850px; margin: auto; text-align: center; }
         header { padding: 30px 0; }
 
-        /* Der neue Live-Badge direkt im Tag */
+        /* Vergrößerter Live-Badge direkt im Tag */
         .live-tag-badge {
             background: var(--live-red);
             color: white;
-            padding: 4px 12px;
-            border-radius: 50px;
+            padding: 8px 16px;
+            border-radius: 12px;
             font-weight: 900;
-            font-size: 12px;
+            font-size: 14px; /* Größerer Text */
             display: inline-flex;
+            flex-direction: column; /* Text untereinander für bessere Lesbarkeit im schmalen Feld */
             align-items: center;
-            gap: 6px;
-            margin-top: 10px;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 15px;
             text-decoration: none;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: pulse-large 1.5s infinite;
+            border: 2px solid white;
+            line-height: 1.2;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            70% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes pulse-large {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
         }
 
-        .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
+        .dot { width: 10px; height: 10px; background: white; border-radius: 50%; box-shadow: 0 0 5px white; }
         
         h1 { font-size: 45px; color: #1a2a40; margin: 0; }
         h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
@@ -61,7 +65,7 @@
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f4f8; }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 90px; height: 120px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #dbeafe; }
+        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #dbeafe; }
         
         .slot-body { flex: 1; }
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
@@ -139,11 +143,11 @@
                 lastDate = datumStr;
             }
 
-            // Wenn Status "live" ist, Badge in die aktuelle Tagesbox (links unter das Datum)
             if (status === 'live') {
                 currentWeekdayDiv.innerHTML = `
                     <a href="https://twitch.tv/outburstone" target="_blank" class="live-tag-badge">
-                        <div class="dot"></div> LIVE
+                        <div class="dot"></div>
+                        <span>JETZT LIVE<br>AUF TWITCH</span>
                     </a>`;
             }
 
