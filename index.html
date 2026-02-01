@@ -52,7 +52,6 @@
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.4s ease; }
         .past-day { opacity: 0.5; filter: grayscale(80%); }
-        .past-day:hover { opacity: 0.9; filter: grayscale(0%); transform: translateY(-3px); }
         .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
@@ -63,12 +62,13 @@
         .slot:last-child { border-bottom: none; }
         .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; }
         
-        .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .cal-btn { cursor: pointer; color: rgba(255,255,255,0.8); transition: 0.2s; }
-        .cal-btn:hover { color: #fff; transform: scale(1.2); }
+        .time-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
         
-        /* Neuer Countdown Style: Neben der Zeit */
-        .countdown { color: #ff4d4d; margin-left: 5px; text-transform: uppercase; display: inline-block; }
+        .countdown { color: #ff0000; font-size: 14px; font-weight: 800; text-transform: uppercase; }
+        
+        .cal-btn { cursor: pointer; color: rgba(255,255,255,0.8); transition: 0.2s; font-size: 14px; }
+        .cal-btn:hover { color: #fff; transform: scale(1.2); }
         
         .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
 
@@ -91,9 +91,10 @@
         .choice-btn.ki { background: var(--kick-color); color: #000; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; }
 
-        footer { margin-top: 60px; padding: 30px 0 50px; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify-content: center; gap: 30px; margin-bottom: 25px; }
-        .social-icons a { color: var(--social-color); font-size: 28px; transition: 0.3s; }
+        footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; flex-wrap: wrap; }
+        .social-icons a { color: var(--social-color); font-size: 26px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.05); }
+        .social-icons a:hover { transform: translateY(-5px); background: var(--accent-blue); color: white; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
@@ -126,9 +127,12 @@
 
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone" target="_blank"><i class="fab fa-twitch"></i></a>
-        <a href="https://youtube.com/@DEIN_NAME" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://kick.com/outburstone" target="_blank"><i class="fas fa-bolt"></i></a>
+        <a href="https://twitch.tv/outburstone" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://kick.com/outburstone" target="_blank" title="Kick"><i class="fas fa-bolt"></i></a>
+        <a href="https://youtube.com/@DEIN_NAME" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/DEIN_NAME" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/DEIN_NAME" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
     </div>
 </footer>
 
@@ -173,7 +177,7 @@
             if (diff > 0 && diff < 12 * 60 * 60 * 1000) { 
                 const h = Math.floor(diff / 3600000);
                 const min = Math.floor((diff % 3600000) / 60000);
-                el.innerText = `(in ${h}h ${min}m)`;
+                el.innerText = `STARTET IN ${h}H ${min}M`;
             } else { el.innerText = ""; }
         });
     }
@@ -259,10 +263,12 @@
                     <div class="slot">
                         <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
                         <div class="slot-body">
-                            <div class="time-badge">
-                                <span>${zeit} Uhr</span>
+                            <div class="time-row">
+                                <div class="time-badge">
+                                    ${zeit} Uhr 
+                                    <i class="far fa-calendar-plus cal-btn" title="Zu Google Kalender hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
+                                </div>
                                 <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
-                                <i class="far fa-calendar-plus cal-btn" title="Zu Google Kalender hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
                             </div>
                             <p class="event-title">${titel}</p>
                             ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
