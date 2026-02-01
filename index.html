@@ -39,12 +39,10 @@
             color: white; padding: 8px 12px; border-radius: 12px; font-weight: 900; font-size: 13px; 
             display: inline-flex; flex-direction: column; align-items: center; gap: 5px; 
             margin-top: 15px; text-decoration: none; cursor: pointer; border: 2px solid white;
-            animation: pulse-l 1.5s infinite;
+            animation: pulse-l 1.5s infinite; text-align: center;
         }
-        .live-tag-badge.kick { color: #000; } /* Kick braucht schwarzen Text auf hellem Grün */
         @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
-        .kick .dot { background: #000; }
 
         /* SECTIONS */
         section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
@@ -60,7 +58,7 @@
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .modal-content { background: var(--section-bg); margin: 10% auto; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; position: relative; }
         .modal-btns { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        .choice-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-weight: bold; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
+        .choice-btn { display: none; padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-weight: bold; font-size: 18px; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
         .choice-btn.tw { background: var(--twitch-color); }
         .choice-btn.yt { background: var(--youtube-color); }
         .choice-btn.ki { background: var(--kick-color); color: #000; }
@@ -96,9 +94,9 @@
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <h2 style="margin-top:0;">Wähle deine Plattform</h2>
         <div class="modal-btns">
-            <a id="modalTwitch" href="#" target="_blank" class="choice-btn tw"><i class="fab fa-twitch"></i> Twitch</a>
-            <a id="modalYoutube" href="#" target="_blank" class="choice-btn yt"><i class="fab fa-youtube"></i> YouTube</a>
-            <a id="modalKick" href="#" target="_blank" class="choice-btn ki"><i class="fas fa-bolt"></i> Kick</a>
+            <a id="m-twitch" href="https://twitch.tv/outburstone" target="_blank" class="choice-btn tw"><i class="fab fa-twitch"></i> Twitch</a>
+            <a id="m-youtube" href="#" target="_blank" class="choice-btn yt"><i class="fab fa-youtube"></i> YouTube</a>
+            <a id="m-kick" href="https://kick.com/outburstone" target="_blank" class="choice-btn ki"><i class="fas fa-bolt"></i> Kick</a>
         </div>
     </div>
 </div>
@@ -110,46 +108,32 @@
         <a href="https://tiktok.com/@DEIN_NAME" target="_blank"><i class="fab fa-tiktok"></i></a>
         <a href="https://x.com/DEIN_NAME" target="_blank"><i class="fab fa-x-twitter"></i></a>
         <a href="https://youtube.com/@DEIN_NAME" target="_blank"><i class="fab fa-youtube"></i></a>
-        <a href="https://kick.com/DEIN_NAME" target="_blank"><i class="fas fa-bolt"></i></a>
+        <a href="https://kick.com/outburstone" target="_blank"><i class="fas fa-bolt"></i></a>
     </div>
-    <div style="margin-top: 15px;">
-        <a href="DEIN_LINK" target="_blank" class="legal-link"><i class="fas fa-file-signature"></i> Impressum/Datenschutz</a>
-    </div>
+    <div style="margin-top: 15px;"><a href="DEIN_LINK" target="_blank" class="legal-link">Impressum/Datenschutz</a></div>
 </footer>
 
 <script>
-    // THEME SWITCH
     const toggleSwitch = document.querySelector('#checkbox');
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme) {
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        if (currentTheme === 'dark') toggleSwitch.checked = true;
-    }
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
     });
 
-    // MODAL LOGIC
-    function openModal(t, y, k) {
-        document.getElementById('modalTwitch').href = t;
-        document.getElementById('modalYoutube').href = y;
-        document.getElementById('modalKick').href = k;
+    function openModal(activePlatforms, ytLink) {
+        document.querySelectorAll('.choice-btn').forEach(b => b.style.display = 'none');
+        if (ytLink) document.getElementById('m-youtube').href = ytLink;
+        activePlatforms.forEach(p => {
+            const el = document.getElementById('m-' + p.trim().toLowerCase());
+            if (el) el.style.display = 'flex';
+        });
         document.getElementById('multiModal').style.display = "block";
     }
     function closeModal() { document.getElementById('multiModal').style.display = "none"; }
-    window.onclick = function(e) { if (e.target == document.getElementById('multiModal')) closeModal(); }
 
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
-
-    // DATE
-    const curr = new Date();
-    const diff = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1); 
-    const first = new Date(new Date().setDate(diff));
-    const last = new Date(new Date().setDate(diff + 6));
-    document.getElementById('week-range').innerText = `${first.toLocaleDateString('de-DE')} - ${last.toLocaleDateString('de-DE')}`;
 
     fetch(url).then(res => res.text()).then(data => {
         const rows = data.split('\n').slice(1);
@@ -168,38 +152,45 @@
             if (datumStr !== lastDate) {
                 const section = document.createElement('section');
                 if (datumStr === heute) section.className = 'today';
-                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:15px;color:var(--accent-blue);">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
+                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:14px;color:var(--accent-blue);">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
 
-            const slotsDiv = container.lastElementChild.querySelector('.slots');
             const statusArea = container.lastElementChild.querySelector('.status-area');
+            const slotsDiv = container.lastElementChild.querySelector('.slots');
 
-            // SMARTE LINKS
-            let tUrl = "https://twitch.tv/outburstone";
-            let yUrl = "https://youtube.com/@DEIN_KANAL/live";
-            let kUrl = "https://kick.com/outburstone"; // HIER DEIN KICK NAME
-
-            if (status.includes('live')) {
+            if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
                 btn.className = 'live-tag-badge';
-                btn.innerHTML = `<div class="dot"></div><span>JETZT LIVE<br>`;
-                
-                if (status === 'live') {
-                    btn.style.background = "var(--twitch-color)";
-                    btn.href = tUrl; btn.target = "_blank"; btn.innerHTML += `AUF TWITCH</span>`;
-                } else if (status === 'live-yt' || (status === "" && link.includes("youtube"))) {
-                    btn.style.background = "var(--youtube-color)";
-                    btn.href = (link && link !== 'null') ? link : yUrl; btn.target = "_blank"; btn.innerHTML += `AUF YOUTUBE</span>`;
-                } else if (status === 'live-kick') {
-                    btn.classList.add('kick'); btn.style.background = "var(--kick-color)";
-                    btn.href = kUrl; btn.target = "_blank"; btn.innerHTML += `AUF KICK</span>`;
-                } else if (status === 'live-both') {
-                    btn.style.background = "var(--multi-gradient)";
-                    btn.innerHTML += `ÜBERALL</span>`;
-                    btn.onclick = (e) => { e.preventDefault(); openModal(tUrl, (link && link.includes("youtube") ? link : yUrl), kUrl); };
+                let label = "JETZT LIVE";
+                let bg = "var(--twitch-color)";
+                let platforms = [];
+
+                if (status === 'live') { platforms = ['twitch']; label += "<br>AUF TWITCH"; }
+                else if (status === 'live-yt') { platforms = ['youtube']; label += "<br>AUF YOUTUBE"; bg = "var(--youtube-color)"; }
+                else if (status === 'live-kick') { platforms = ['kick']; label += "<br>AUF KICK"; bg = "var(--kick-color)"; btn.style.color="#000"; }
+                else {
+                    bg = "var(--multi-gradient)";
+                    if (status === 'all' || status === 'live-both') platforms = ['twitch', 'youtube', 'kick'];
+                    else platforms = status.split(',');
+                    
+                    if (platforms.length > 1) {
+                        label = "JETZT LIVE AUF<br>" + platforms.join(' & ').toUpperCase();
+                        btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
+                    } else {
+                        btn.href = (status === 'live-yt' ? link : "https://twitch.tv/outburstone");
+                        btn.target = "_blank";
+                    }
                 }
+                
+                if (platforms.length === 1) {
+                    btn.href = (platforms[0] === 'youtube' && link ? link : (platforms[0] === 'kick' ? "https://kick.com/outburstone" : "https://twitch.tv/outburstone"));
+                    btn.target = "_blank";
+                }
+
+                btn.innerHTML = `<div class="dot"></div><span>${label}</span>`;
+                btn.style.background = bg;
                 statusArea.appendChild(btn);
             }
 
