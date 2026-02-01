@@ -2,62 +2,120 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-   <meta property="og:title" content="Streamplan OutburstOne"> 
-<meta name="twitter:title" content="Streamplan OutburstOne"> 
-<title>Streamplan OutburstOne</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamplan OutburstOne</title>
+    
+    <meta property="og:title" content="Streamplan OutburstOne"> 
+    <meta property="og:description" content="Der aktuelle Streamplan aus Google Sheets."> 
+    <meta name="theme-color" content="#FF93AA"> 
+
     <style>
         :root { 
-            --background-gradient-1: #FEF3F7; --background-gradient-2: #FFC7D6; 
-            --text-color: #FF93AA; --primary-color: #F47590; --border-color: #EB6E9C; 
-            --default-fill-color: rgba(254, 243, 247, 0.7); --badge-color: #FFBBD2; 
+            --background-gradient-1: #FEF3F7; 
+            --background-gradient-2: #FFC7D6; 
+            --text-color: #FF93AA; 
+            --primary-color: #F47590; 
+            --border-color: #EB6E9C; 
+            --default-fill-color: rgba(254, 243, 247, 0.7); 
+            --badge-color: #FFBBD2; 
         }
-        .dark { 
-            --background-gradient-1: #FFB2C3; --background-gradient-2: #FF8AA5; 
-            --text-color: #FFF; --primary-color: #FFF; --default-fill-color: #FA819D; 
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-gradient-1: #301826;
+                --background-gradient-2: #1a0c14;
+                --text-color: #FFB2C3;
+                --default-fill-color: rgba(48, 24, 38, 0.8);
+            }
         }
+
         body { 
-            margin: 0; font-family: 'Lato', sans-serif; 
+            margin: 0; 
+            font-family: 'Lato', -apple-system, sans-serif; 
             background: linear-gradient(180deg, var(--background-gradient-1), var(--background-gradient-2)); 
-            min-height: 100vh; color: #333;
+            min-height: 100vh;
+            color: #333;
         }
-        header, main { width: 95%; max-width: 800px; margin: auto; text-align: center; position: relative; z-index: 2; }
-        header { padding: 40px 0; }
-        h1 { font-size: 40px; color: #301826; margin: 0; }
-       <header>
-    <h1><span>OutburstOne</span> Streamplan</h1>
-    <p id="status-msg">Lade Daten aus Google Sheets...</p>
-</header>
+
+        header, main { 
+            width: 95%; 
+            max-width: 800px; 
+            margin: auto; 
+            text-align: center; 
+            padding-bottom: 50px;
+        }
+
+        header { padding-top: 40px; }
+        h1 { font-size: 45px; color: #301826; margin: 0; line-height: 1; }
+        h1 span { display: block; font-size: 28px; color: var(--primary-color); font-weight: normal; margin-bottom: 5px; }
+        #status-msg { color: var(--primary-color); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         
         section { 
-            display: flex; margin-top: 20px; border: solid 1px var(--border-color); 
-            border-radius: 25px; background-color: var(--default-fill-color); overflow: hidden; text-align: left;
+            display: flex; 
+            margin-top: 20px; 
+            border: solid 1px var(--border-color); 
+            border-radius: 25px; 
+            background-color: var(--default-fill-color); 
+            overflow: hidden; 
+            text-align: left;
+            transition: all 0.3s ease;
         }
-        .weekday { padding: 25px; width: 180px; border-right: solid 1px var(--border-color); background: rgba(255,255,255,0.1); }
-        .weekday h3 { margin: 0; color: #301826; }
-        .weekday h3 span { display: block; font-size: 22px; }
+
+        /* Automatisches Verblassen für vergangene Tage */
+        .past-day {
+            opacity: 0.35;
+            filter: grayscale(60%);
+            transform: scale(0.98);
+        }
+
+        /* Highlight für HEUTE */
+        .today { 
+            box-shadow: 0 0 25px var(--border-color); 
+            border: 2px solid var(--border-color); 
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .weekday { 
+            padding: 25px; 
+            width: 180px; 
+            border-right: solid 1px var(--border-color); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .weekday h3 { margin: 0; color: #301826; font-size: 18px; }
+        .weekday h3 span { display: block; font-size: 24px; font-weight: bold; }
         
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .slot { display: flex; align-items: center; padding: 15px; text-decoration: none; border-bottom: 1px solid rgba(235, 110, 156, 0.2); }
+        .slot { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 20px; 
+            text-decoration: none; 
+            border-bottom: 1px solid rgba(235, 110, 156, 0.1); 
+        }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 65px; border-radius: 10px; margin-right: 20px; }
-        .slot h4 { background: var(--badge-color); color: #fff; padding: 3px 12px; border-radius: 15px; display: inline-block; margin: 0 0 5px 0; font-size: 14px; }
-        .slot p { margin: 0; color: var(--text-color); font-weight: bold; font-size: 16px; }
-        .slot p span { display: block; font-weight: normal; font-size: 13px; opacity: 0.8; }
+        .slot img { width: 65px; border-radius: 12px; margin-right: 20px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .slot h4 { background: var(--badge-color); color: #fff; padding: 4px 14px; border-radius: 20px; display: inline-block; margin: 0 0 6px 0; font-size: 14px; }
+        .slot p { margin: 0; color: var(--text-color); font-weight: bold; font-size: 17px; line-height: 1.2; }
+        .slot p span { display: block; font-weight: normal; font-size: 13px; opacity: 0.8; margin-top: 2px; }
 
-        .today { box-shadow: 0 0 20px var(--border-color); border: 2px solid var(--border-color); }
-        .offday-text { padding: 30px; text-align: center; width: 100%; font-weight: bold; color: var(--text-color); text-transform: uppercase; }
+        .offday-text { padding: 40px; text-align: center; width: 100%; font-weight: bold; color: var(--text-color); font-size: 18px; letter-spacing: 2px; }
 
-        @media(max-width: 600px) {
+        @media(max-width: 650px) {
             section { flex-direction: column; }
-            .weekday { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); box-sizing: border-box; }
+            .weekday { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); padding: 15px 25px; }
+            .slot img { width: 50px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1><span>JenNyan</span> Streamplan</h1>
-    <p id="status-msg">Lade aktuellen Plan...</p>
+    <h1><span>OutburstOne</span> Streamplan</h1>
+    <p id="status-msg">Verbinde mit Google Sheets...</p>
 </header>
 
 <main id="plan-container">
@@ -69,45 +127,49 @@
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
 
     fetch(url)
-        .then(res => res.text())
+        .then(res => {
+            if (!res.ok) throw new Error();
+            return res.text();
+        })
         .then(data => {
             const rows = data.split('\n').slice(1);
             const container = document.getElementById('plan-container');
             container.innerHTML = '';
             
-            // Aktuelles Datum ohne Uhrzeit zum Vergleich
             const heute = new Date();
             heute.setHours(0, 0, 0, 0);
 
             rows.forEach(row => {
-                const cols = row.split('","').map(c => c.replace(/"/g, '').trim());
-                if (cols.length < 5) return;
+                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
 
-                const [tag, datumStr, zeit, titel, untertitel, spielID, manuellerStatus] = cols;
+                if (clean.length < 5) return;
+                const [tag, datumStr, zeit, titel, untertitel, spielID, manuellerStatus] = clean;
 
-                // Datum aus Tabelle parsen (Format TT.MM.JJJJ)
-                const parts = datumStr.split('.');
-                const terminDatum = new Date(parts[2], parts[1] - 1, parts[0]);
-                terminDatum.setHours(0, 0, 0, 0);
+                // Datum parsen (TT.MM.JJJJ)
+                const dParts = datumStr.split('.');
+                const termin = new Date(dParts[2], dParts[1] - 1, dParts[0]);
+                termin.setHours(0, 0, 0, 0);
 
                 const section = document.createElement('section');
                 
-                // Logik für Highlights und Verblassen
-                if (terminDatum.getTime() === heute.getTime()) {
-                    section.className = 'today'; // Leuchtet
-                } else if (terminDatum.getTime() < heute.getTime()) {
-                    section.style.opacity = "0.35"; // Verblasst
-                    section.style.filter = "grayscale(50%)";
+                // Automatischer Status-Check
+                if (termin.getTime() === heute.getTime()) {
+                    section.className = 'today';
+                } else if (termin.getTime() < heute.getTime()) {
+                    section.className = 'past-day';
                 }
 
-                let html = `<div class="weekday"><h3><span>${tag}</span>${datumStr}</h3></div><div class="slots">`;
+                let innerHTML = `
+                    <div class="weekday"><h3><span>${tag}</span>${datumStr}</h3></div>
+                    <div class="slots">`;
 
                 if (manuellerStatus && manuellerStatus.toLowerCase().includes('offday')) {
-                    html += `<div class="offday-text">✨ Streamfrei ✨</div>`;
+                    innerHTML += `<div class="offday-text">✨ STREAMFREI ✨</div>`;
                 } else {
-                    html += `
-                        <a href="https://twitch.tv/jennyan" target="_blank" class="slot">
-                            <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg">
+                    innerHTML += `
+                        <a href="https://twitch.tv/outburstone" target="_blank" class="slot">
+                            <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg" alt="Game">
                             <div class="content">
                                 <h4>ab ${zeit || '??:??'} Uhr</h4>
                                 <p>${titel || 'Stream'} <span>${untertitel || ''}</span></p>
@@ -115,12 +177,16 @@
                         </a>`;
                 }
 
-                html += `</div>`;
-                section.innerHTML = html;
+                innerHTML += `</div>`;
+                section.innerHTML = innerHTML;
                 container.appendChild(section);
             });
-            document.getElementById('status-msg').innerText = "Wochenplan (automatisch aktualisiert)";
+            document.getElementById('status-msg').innerText = "Aktuelle Woche";
+        })
+        .catch(err => {
+            document.getElementById('status-msg').innerText = "Fehler: Tabellenname 'Plan' oder Freigabe prüfen!";
         });
 </script>
+
 </body>
 </html>
