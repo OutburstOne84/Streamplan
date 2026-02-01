@@ -288,21 +288,34 @@
 
             // --- SLOT ANZEIGE ---
             if (status === 'offday') {
-                slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
-            } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
-                const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
-                slotsDiv.insertAdjacentHTML('beforeend', `
-                    <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg" onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
-                        <div class="slot-body">
-                            <div class="time-row">
-                                <div class="time-badge">${zeit} Uhr <i class="far fa-calendar-plus cal-btn" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i></div>
-                                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
-                            </div>
-                            <p class="event-title">${titel}</p>
-                            ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
-                        </div>
-                    </div>`);
+             // --- NEUE LOGIK FÜR MANUELLE BILDER ODER IDs ---
+let imageUrl;
+if (spielID.toLowerCase().startsWith('http')) {
+    // Wenn ein Link (http...) im Sheet steht, nimm diesen
+    imageUrl = spielID;
+} else {
+    // Wenn eine Zahl (ID) drin steht, nimm den Twitch-Link
+    const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
+    imageUrl = `https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg`;
+}
+
+slotsDiv.insertAdjacentHTML('beforeend', `
+    <div class="slot">
+        <img src="${imageUrl}" 
+             alt="Cover" 
+             onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
+        <div class="slot-body">
+            <div class="time-row">
+                <div class="time-badge">
+                    ${zeit} Uhr 
+                    <i class="far fa-calendar-plus cal-btn" title="Hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
+                </div>
+                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
+            </div>
+            <p class="event-title">${titel}</p>
+            ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
+        </div>
+    </div>`);
             }
         });
 
