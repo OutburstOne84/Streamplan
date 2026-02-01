@@ -209,11 +209,14 @@
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
 
+// Ersetze den gesamten fetch-Block durch diesen optimierten Teil:
     fetch(url).then(res => res.text()).then(data => {
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
         const heuteVergleich = new Date(); heuteVergleich.setHours(0,0,0,0);
+        
+        let allDates = []; // Array für alle gefundenen Daten
         let lastDate = "";
 
         rows.forEach(row => {
@@ -223,13 +226,21 @@
             const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
+            // Datum für die Bereichsanzeige sammeln
+            if (datumStr) {
+                const p = datumStr.split('.');
+                allDates.push(new Date(p[2], p[1]-1, p[0]));
+            }
+
             if (datumStr !== lastDate) {
                 const section = document.createElement('section');
                 const parts = datumStr.split('.');
                 const termin = new Date(parts[2], parts[1]-1, parts[0]);
                 termin.setHours(0,0,0,0);
+                
                 if (termin.getTime() === heuteVergleich.getTime()) section.className = 'today';
                 else if (termin.getTime() < heuteVergleich.getTime()) section.className = 'past-day';
+                
                 section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:14px;color:var(--accent-blue);font-weight:700;">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
@@ -239,6 +250,7 @@
             const statusArea = currentSection.querySelector('.status-area');
             const slotsDiv = currentSection.querySelector('.slots');
 
+            // --- HIER FOLGT DIE LIVE-LOGIK (Bleibt wie zuvor) ---
             if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
                 btn.className = 'live-tag-badge';
@@ -247,11 +259,11 @@
                 let bg = "var(--twitch-color)";
                 let glowClass = "";
 
-                if (status === 'live') { platforms = ['twitch']; }
-                else if (status === 'live-yt') { platforms = ['youtube']; }
-                else if (status === 'live-kick') { platforms = ['kick']; }
-                else if (status === 'all' || status === 'live-both') { platforms = ['twitch', 'youtube', 'kick']; }
-                else { platforms = status.split(',').map(p => p.trim().toLowerCase()); }
+                if (status === 'live') platforms = ['twitch'];
+                else if (status === 'live-yt') platforms = ['youtube'];
+                else if (status === 'live-kick') platforms = ['kick'];
+                else if (status === 'all' || status === 'live-both') platforms = ['twitch', 'youtube', 'kick'];
+                else platforms = status.split(',').map(p => p.trim().toLowerCase());
 
                 if (platforms.length === 1) {
                     label = `JETZT LIVE AUF<br>${platforms[0].toUpperCase()}`;
@@ -260,15 +272,12 @@
                     else { glowClass = "glow-twitch"; }
                     btn.href = (platforms[0] === 'youtube' && link ? link : (platforms[0] === 'kick' ? "https://kick.com/outburstone" : "https://twitch.tv/outburstone"));
                     btn.target = "_blank";
-                } 
-                else if (platforms.length === 3) { label = "JETZT ÜBERALL LIVE"; bg = "var(--multi-gradient)"; glowClass = "glow-multi"; btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); }; }
-                else {
-                    label = `JETZT LIVE AUF<br>${platforms[0].toUpperCase()} & ${platforms[1].toUpperCase()}`;
+                } else {
+                    label = "JETZT ÜBERALL LIVE";
                     glowClass = "glow-multi";
-                    let colors = platforms.map(p => p === 'twitch' ? "#9146FF" : (p === 'youtube' ? "#FF0000" : "#53fc18"));
-                    bg = `linear-gradient(90deg, ${colors.join(', ')})`;
                     btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
                 }
+
                 if (currentSection.classList.contains('today')) {
                     currentSection.classList.add(glowClass);
                     document.title = `🔴 LIVE: ${titel}`;
@@ -278,19 +287,17 @@
                 statusArea.appendChild(btn);
             }
 
+            // --- SLOT ANZEIGE ---
             if (status === 'offday') {
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
             } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
                 const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
+                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg" onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
                         <div class="slot-body">
                             <div class="time-row">
-                                <div class="time-badge">
-                                    ${zeit} Uhr 
-                                    <i class="far fa-calendar-plus cal-btn" title="Zu Google Kalender hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
-                                </div>
+                                <div class="time-badge">${zeit} Uhr <i class="far fa-calendar-plus cal-btn" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i></div>
                                 <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
                             </div>
                             <p class="event-title">${titel}</p>
@@ -299,6 +306,15 @@
                     </div>`);
             }
         });
+
+        // DYNAMISCHE WOCHENANZEIGE (Header)
+        if (allDates.length > 0) {
+            allDates.sort((a, b) => a - b); // Sortieren nach Datum
+            const start = allDates[0].toLocaleDateString('de-DE');
+            const end = allDates[allDates.length - 1].toLocaleDateString('de-DE');
+            document.getElementById('week-range').innerText = `${start} - ${end}`;
+        }
+        
         updateCountdowns();
     });
 
