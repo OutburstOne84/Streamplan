@@ -209,7 +209,6 @@
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
 
-// Ersetze den gesamten fetch-Block durch diesen optimierten Teil:
     fetch(url).then(res => res.text()).then(data => {
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
