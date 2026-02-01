@@ -4,90 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Streamplan OutburstOne</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         :root { 
             --bg-1: #f0f7ff; --bg-2: #c7d9ff; 
             --text-color: #1a2a40; --accent-blue: #3b82f6; --border-color: #93c5fd; 
             --section-bg: #ffffff; --date-bg: #e0efff; --badge-color: #2563eb; 
             --action-color: #1d4ed8; --live-red: #ff0000; --slot-border: #f0f4f8;
+            --social-color: #1e3a8a;
         }
 
-        /* Dunkles Farbschema */
         [data-theme="dark"] {
             --bg-1: #0f172a; --bg-2: #1e293b; 
             --text-color: #f1f5f9; --accent-blue: #60a5fa; --border-color: #334155; 
             --section-bg: #1e293b; --date-bg: #334155; --badge-color: #3b82f6; 
             --action-color: #2563eb; --slot-border: #475569;
+            --social-color: #f1f5f9;
         }
 
         body { 
             margin: 0; font-family: 'Segoe UI', sans-serif; 
             background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); 
-            min-height: 100vh; color: var(--text-color); padding-bottom: 50px; 
+            min-height: 100vh; color: var(--text-color); padding-bottom: 80px; 
             transition: background 0.3s ease, color 0.3s ease;
         }
         
-        header, main { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
+        header, main, footer { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
         header { padding: 40px 0 20px; }
 
-        /* DARK MODE SLIDER */
-        .theme-switch-wrapper {
-            position: absolute; right: 0; top: 10px; display: flex; align-items: center; gap: 10px;
-        }
-        .theme-switch {
-            display: inline-block; height: 24px; position: relative; width: 50px;
-        }
+        /* THEME SLIDER */
+        .theme-switch-wrapper { position: absolute; right: 0; top: 10px; display: flex; align-items: center; gap: 8px; }
+        .theme-switch { display: inline-block; height: 20px; position: relative; width: 44px; }
         .theme-switch input { display:none; }
-        .slider {
-            background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0;
-            transition: .4s; border-radius: 34px;
-        }
-        .slider:before {
-            background-color: white; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute;
-            transition: .4s; width: 16px; border-radius: 50%;
-        }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
+        .slider:before { background-color: white; bottom: 3px; content: ""; height: 14px; left: 4px; position: absolute; transition: .4s; width: 14px; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-blue); }
-        input:checked + .slider:before { transform: translateX(26px); }
-        .mode-icon { font-size: 14px; }
+        input:checked + .slider:before { transform: translateX(22px); }
 
-        /* LIVE BUTTON */
+        /* LIVE BADGE */
         .live-tag-badge {
-            background: var(--live-red); color: white; padding: 8px 16px; border-radius: 12px;
+            background: var(--live-red); color: white; padding: 8px 12px; border-radius: 12px;
             font-weight: 900; font-size: 13px; display: inline-flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 5px; margin-top: 15px; 
-            text-decoration: none; box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            animation: pulse-large 1.5s infinite; border: 2px solid white;
+            align-items: center; gap: 5px; margin-top: 15px; text-decoration: none; 
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); animation: pulse-l 1.5s infinite; border: 2px solid white;
         }
+        @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
-        @keyframes pulse-large {
-            0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); }
-        }
-
-        .dot { width: 10px; height: 10px; background: white; border-radius: 50%; }
         h1 { font-size: 45px; margin: 0; }
         h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
         #status-container { margin-top: 15px; font-size: 16px; font-weight: bold; }
         #week-range { background: var(--badge-color); color: white; padding: 5px 15px; border-radius: 8px; display: inline-block; margin-left: 5px; }
 
-        /* SECTIONS */
-        section { 
-            display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; 
-            background-color: var(--section-bg); overflow: hidden; text-align: left; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1); transition: background 0.3s ease;
-        }
-        
+        /* CONTENT */
+        section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
         .past-day { opacity: 0.5; filter: grayscale(80%); transition: 0.3s; }
         .past-day:hover { opacity: 0.85; filter: grayscale(0%); }
         .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); border: 3px solid var(--accent-blue); transform: scale(1.02); }
-
-        .weekday { 
-            padding: 20px; width: 150px; background-color: var(--date-bg); 
-            border-right: 2px solid var(--border-color); display: flex; 
-            flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; 
-        }
+        
+        .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
         .datum-text { font-size: 15px; font-weight: bold; color: var(--accent-blue); }
-
+        
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--slot-border); }
         .slot:last-child { border-bottom: none; }
@@ -95,9 +73,16 @@
         
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
         .event-title { margin: 0; font-weight: 800; font-size: 18px; }
+        .guest-text { color: var(--accent-blue); font-size: 13px; font-weight: bold; margin-top: 5px; }
+        
         .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
-
         .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: #64748b; font-size: 22px; }
+
+        /* SOCIAL MEDIA FOOTER */
+        footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid var(--border-color); }
+        .social-icons { display: flex; justify-content: center; gap: 30px; }
+        .social-icons a { color: var(--social-color); font-size: 28px; transition: transform 0.2s, color 0.2s; text-decoration: none; }
+        .social-icons a:hover { transform: scale(1.2); color: var(--accent-blue); }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
     </style>
@@ -106,12 +91,12 @@
 
 <header>
     <div class="theme-switch-wrapper">
-        <span class="mode-icon">☀️</span>
+        <span>☀️</span>
         <label class="theme-switch" for="checkbox">
             <input type="checkbox" id="checkbox" />
             <div class="slider"></div>
         </label>
-        <span class="mode-icon">🌙</span>
+        <span>🌙</span>
     </div>
     <h1><span>OutburstOne</span> Streamplan</h1>
     <div id="status-container">
@@ -121,26 +106,29 @@
 
 <main id="plan-container"></main>
 
+<footer>
+    <div class="social-icons">
+        <a href="https://twitch.tv/outburstone" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://instagram.com/DEIN_NAME" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/DEIN_NAME" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://youtube.com/@DEIN_NAME" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    </div>
+</footer>
+
 <script>
-    // THEME SWITCH LOGIC
+    // THEME SWITCH
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
     const currentTheme = localStorage.getItem('theme');
-
     if (currentTheme) {
         document.documentElement.setAttribute('data-theme', currentTheme);
         if (currentTheme === 'dark') { toggleSwitch.checked = true; }
     }
-
-    function switchTheme(e) {
-        if (e.target.checked) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
-        }    
-    }
-    toggleSwitch.addEventListener('change', switchTheme, false);
+    toggleSwitch.addEventListener('change', (e) => {
+        const theme = e.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    });
 
     // DATE LOGIC
     function setWeekDisplay() {
@@ -169,7 +157,6 @@
             const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 4) return;
-
             const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
@@ -179,14 +166,7 @@
                 const section = document.createElement('section');
                 if (termin.getTime() === heute.getTime()) section.className = 'today';
                 else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
-
-                section.innerHTML = `
-                    <div class="weekday">
-                        <h3><span>${tag}</span><div class="datum-text">${datumStr}</div></h3>
-                        <div class="status-area"></div>
-                    </div>
-                    <div class="slots"></div>`;
-                
+                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="datum-text">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
@@ -203,18 +183,12 @@
                 slotsDiv.innerHTML = `<div class="offday-container">❄️ STREAMFREI ❄️</div>`;
             } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
-                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-blue); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
-                const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
                 
-                slotsDiv.insertAdjacentHTML('beforeend', `
-                    <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
-                        <div class="slot-body">
-                            <div class="time-badge">${zeit} Uhr</div>
-                            <p class="event-title">${titel}</p>
-                            ${guestHTML} ${linkHTML}
-                        </div>
-                    </div>`);
+                // GÄSTE LOGIK: Fügt "Heute mit" hinzu, wenn Gäste eingetragen sind
+                const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div class="guest-text">👥 Heute mit ${gaeste}</div>` : '';
+                
+                const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
+                slotsDiv.insertAdjacentHTML('beforeend', `<div class="slot"><img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg"><div class="slot-body"><div class="time-badge">${zeit} Uhr</div><p class="event-title">${titel}</p>${guestHTML} ${linkHTML}</div></div>`);
             }
         });
     });
