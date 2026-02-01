@@ -68,7 +68,10 @@
         .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; }
         
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-block; }
-        .countdown { display: block; font-size: 11px; font-weight: 900; color: var(--accent-blue); margin-top: 4px; text-transform: uppercase; }
+        
+        /* Countdown in ROT */
+        .countdown { display: block; font-size: 11px; font-weight: 900; color: #ff0000; margin-top: 4px; text-transform: uppercase; }
+        
         .event-title { margin: 5px 0 0; font-weight: 800; font-size: 20px; }
 
         .live-tag-badge {
@@ -79,7 +82,6 @@
         }
         @keyframes pulse-badge { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
 
-        /* MODAL */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); }
         .modal-content { background: var(--section-bg); margin: 12% auto; padding: 40px; border-radius: 30px; width: 85%; max-width: 380px; text-align: center; position: relative; }
         .modal-btns { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
@@ -136,7 +138,6 @@
 </footer>
 
 <script>
-    // THEME
     const toggleSwitch = document.querySelector('#checkbox');
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
@@ -155,18 +156,17 @@
         document.getElementById('multiModal').style.display = "block";
     }
 
-    // COUNTDOWN LOGIC
     function updateCountdowns() {
         const now = new Date();
         document.querySelectorAll('.countdown').forEach(el => {
-            const targetTime = el.getAttribute('data-time'); // Format HH:mm
-            const targetDateStr = el.getAttribute('data-date'); // Format dd.mm.yyyy
+            const targetTime = el.getAttribute('data-time');
+            const targetDateStr = el.getAttribute('data-date');
             const [d, m, y] = targetDateStr.split('.');
             const [hrs, mins] = targetTime.split(':');
             const target = new Date(y, m - 1, d, hrs, mins);
             
             const diff = target - now;
-            if (diff > 0 && diff < 8 * 60 * 60 * 1000) { // Nur anzeigen wenn in den nächsten 8h
+            if (diff > 0 && diff < 12 * 60 * 60 * 1000) { 
                 const h = Math.floor(diff / 3600000);
                 const min = Math.floor((diff % 3600000) / 60000);
                 el.innerText = `Startet in ${h}h ${min}m`;
@@ -175,7 +175,7 @@
             }
         });
     }
-    setInterval(updateCountdowns, 60000);
+    setInterval(updateCountdowns, 30000);
 
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
@@ -236,7 +236,7 @@
 
                 if (currentSection.classList.contains('today')) {
                     currentSection.classList.add(glowClass);
-                    document.title = `🔴 LIVE: ${titel} | OutburstOne`;
+                    document.title = `🔴 LIVE: ${titel}`;
                 }
 
                 btn.style.background = bg;
