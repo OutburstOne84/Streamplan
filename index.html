@@ -10,7 +10,8 @@
             --bg-1: #f0f7ff; --bg-2: #c7d9ff; --text-color: #1a2a40; --accent-blue: #3b82f6; 
             --border-color: #93c5fd; --section-bg: #ffffff; --date-bg: #e0efff; 
             --badge-color: #2563eb; --slot-border: #f0f4f8;
-            --twitch-color: #9146FF; --youtube-color: #FF0000; --kick-color: #53fc18; --insta-color: #E1306C; --tiktok-color: #000000; --x-color: #000000;
+            --twitch-color: #9146FF; --youtube-color: #FF0000; --kick-color: #53fc18; 
+            --insta-color: #E1306C; --tiktok-color: #000000; --x-color: #000000;
         }
 
         [data-theme="dark"] {
@@ -27,6 +28,15 @@
         h1 span { display: block; font-size: 24px; color: var(--accent-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
         
         #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-top: 15px; font-weight: 700; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+
+        /* TAG/NACHT MODUS BUTTON */
+        .theme-switch-wrapper { position: absolute; right: 0; top: 20px; display: flex; align-items: center; gap: 10px; }
+        .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
+        .theme-switch input { display:none; }
+        .slider { background-color: #cbd5e1; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
+        .slider:before { background-color: white; bottom: 4px; content: ""; height: 16px; left: 4px; position: absolute; transition: .4s; width: 16px; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-blue); }
+        input:checked + .slider:before { transform: translateX(24px); }
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .past-day { opacity: 0.4; filter: grayscale(100%); }
@@ -49,7 +59,7 @@
 
         /* FOOTER SOCIALS */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
         .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; transition: 0.3s; }
         .social-icons a:hover { transform: translateY(-5px); filter: brightness(1.2); }
         
@@ -60,12 +70,25 @@
         .tt { background-color: var(--tiktok-color); }
         .x  { background-color: var(--x-color); }
 
-        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
+        .legal-btn { 
+            display: inline-block; padding: 10px 25px; border: 2px solid var(--border-color); 
+            border-radius: 50px; color: var(--text-color); text-decoration: none; 
+            font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; margin-top: 20px;
+        }
+        .legal-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); transform: scale(1.05); }
+
+        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } .theme-switch-wrapper { top: 10px; } }
     </style>
 </head>
 <body>
 
 <header>
+    <div class="theme-switch-wrapper">
+        <span>☀️</span>
+        <label class="theme-switch" for="checkbox"><input type="checkbox" id="checkbox" /><div class="slider"></div></label>
+        <span>🌙</span>
+    </div>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
     <div id="week-range">Lädt...</div>
 </header>
@@ -74,17 +97,25 @@
 
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone" class="tw"><i class="fab fa-twitch"></i></a>
-        <a href="https://kick.com/outburstone" class="ki"><i class="fas fa-bolt"></i></a>
-        <a href="https://youtube.com/" class="yt"><i class="fab fa-youtube"></i></a>
-        <a href="https://instagram.com/" class="ig"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/" class="tt"><i class="fab fa-tiktok"></i></a>
-        <a href="https://x.com/" class="x"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://twitch.tv/outburstone" class="tw" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://kick.com/outburstone" class="ki" title="Kick"><i class="fas fa-bolt"></i></a>
+        <a href="https://youtube.com/" class="yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/" class="x" title="X"><i class="fab fa-x-twitter"></i></a>
     </div>
-    <a href="#" style="font-size: 12px; opacity: 0.6; color: var(--text-color); text-decoration: none; font-weight: bold; margin-top: 30px; display: inline-block;">IMPRESSUM & DATENSCHUTZ</a>
+    <a href="DEIN_LINK" class="legal-btn">Impressum & Datenschutz</a>
 </footer>
 
 <script>
+    // THEME SWITCH LOGIK
+    const toggleSwitch = document.querySelector('#checkbox');
+    toggleSwitch.addEventListener('change', (e) => {
+        const theme = e.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    });
+
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
 
@@ -119,8 +150,9 @@
                 lastDate = datumStr;
             }
 
-            const slotsDiv = container.lastElementChild.querySelector('.slots');
-            const statusArea = container.lastElementChild.querySelector('.status-area');
+            const currentSection = container.lastElementChild;
+            const slotsDiv = currentSection.querySelector('.slots');
+            const statusArea = currentSection.querySelector('.status-area');
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
             if (status === 'live') {
@@ -130,12 +162,11 @@
             if (status === 'offday') {
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:20px;">❄️ STREAMFREI ❄️</div>`;
             } else {
-                // BILD-LOGIK MIT SAUBERER URL-EXTRAKTION
                 let finalImg;
-                // Entfernt alles, was kein Teil der URL sein sollte (Anführungszeichen, versteckte CSV-Reste)
-                let cleanID = spielID.replace(/[^\w\s\d.:\/\-_]/g, "").trim();
+                // Aggressiver Fix für URLs aus Google Sheets
+                let cleanID = spielID.replace(/["']/g, "").trim();
 
-                if (cleanID.startsWith('http')) {
+                if (cleanID.toLowerCase().startsWith('http')) {
                     finalImg = cleanID;
                 } else {
                     const id = (cleanID && !isNaN(cleanID)) ? cleanID : '509658';
@@ -155,7 +186,9 @@
 
         if (allDates.length > 0) {
             allDates.sort((a,b) => a-b);
-            document.getElementById('week-range').innerText = `${allDates[0].toLocaleDateString('de-DE')} - ${allDates[allDates.length-1].toLocaleDateString('de-DE')}`;
+            const start = allDates[0].toLocaleDateString('de-DE');
+            const end = allDates[allDates.length-1].toLocaleDateString('de-DE');
+            document.getElementById('week-range').innerText = `${start} - ${end}`;
         }
     });
 </script>
