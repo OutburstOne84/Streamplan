@@ -51,7 +51,12 @@
         .glow-multi { animation: glow-multi 2s infinite !important; border-color: #ffd700 !important; }
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.4s ease; }
-        .past-day { opacity: 0.5; filter: grayscale(80%); }
+        
+        /* Korrektur Vergangene Tage */
+        .past-day { opacity: 0.4 !important; filter: grayscale(100%); }
+        .past-day:hover { opacity: 0.9 !important; filter: grayscale(0%) !important; transform: translateY(-3px); }
+        .past-day.glow-twitch, .past-day.glow-yt, .past-day.glow-kick, .past-day.glow-multi { animation: none !important; border-color: var(--border-color) !important; }
+
         .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
@@ -92,7 +97,7 @@
 
         /* FOOTER */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .social-icons { display: flex; justify(center); gap: 15px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
         .social-icons a { color: var(--social-color); font-size: 22px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(0,0,0,0.05); text-decoration: none; }
         
         .social-icons a.tw:hover { background: #9146FF; color: white; }
@@ -150,7 +155,7 @@
         <a href="https://x.com/DEIN_NAME" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
     </div>
     <div class="legal-btn-container">
-        <a href="DEIN_LINK_ZUR_SEITE" class="legal-btn">Impressum / Datenschutz</a>
+        <a href="DEIN_LINK" class="legal-btn">Impressum / Datenschutz</a>
     </div>
 </footer>
 
