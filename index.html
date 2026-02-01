@@ -63,12 +63,14 @@
         .slot:last-child { border-bottom: none; }
         .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; }
         
-        .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
+        .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .cal-btn { cursor: pointer; color: rgba(255,255,255,0.8); transition: 0.2s; }
         .cal-btn:hover { color: #fff; transform: scale(1.2); }
         
-        .countdown { display: block; font-size: 11px; font-weight: 900; color: #ff0000; margin-top: 4px; text-transform: uppercase; }
-        .event-title { margin: 5px 0 0; font-weight: 800; font-size: 20px; }
+        /* Neuer Countdown Style: Neben der Zeit */
+        .countdown { color: #ff4d4d; margin-left: 5px; text-transform: uppercase; display: inline-block; }
+        
+        .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
 
         .live-tag-badge {
             color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; 
@@ -79,10 +81,11 @@
         @keyframes pulse-badge { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
+        /* MODAL */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); }
         .modal-content { background: var(--section-bg); margin: 12% auto; padding: 40px; border-radius: 30px; width: 85%; max-width: 380px; text-align: center; position: relative; }
         .modal-btns { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
-        .choice-btn { display: none; padding: 16px; border-radius: 16px; text-decoration: none; color: white; font-weight: 800; font-size: 18px; align-items: center; justify-content: center; gap: 12px; transition: 0.2s; }
+        .choice-btn { display: none; padding: 16px; border-radius: 16px; text-decoration: none; color: white; font-weight: 800; font-size: 18px; align-items: center; justify-content: center; gap: 12px; }
         .choice-btn.tw { background: var(--twitch-color); }
         .choice-btn.yt { background: var(--youtube-color); }
         .choice-btn.ki { background: var(--kick-color); color: #000; }
@@ -127,7 +130,6 @@
         <a href="https://youtube.com/@DEIN_NAME" target="_blank"><i class="fab fa-youtube"></i></a>
         <a href="https://kick.com/outburstone" target="_blank"><i class="fas fa-bolt"></i></a>
     </div>
-    <div><a href="#" class="legal-link" style="color:var(--social-color); text-decoration:none; font-weight:700;">Impressum & Datenschutz</a></div>
 </footer>
 
 <script>
@@ -149,13 +151,11 @@
         document.getElementById('multiModal').style.display = "block";
     }
 
-    // Google Kalender Funktion
     function addToCalendar(title, dateStr, timeStr) {
         const [d, m, y] = dateStr.split('.');
         const [hrs, mins] = timeStr.split(':');
         const start = new Date(y, m - 1, d, hrs, mins);
-        const end = new Date(start.getTime() + 3 * 60 * 60 * 1000); // 3 Std Dauer
-        
+        const end = new Date(start.getTime() + 3 * 60 * 60 * 1000);
         const format = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
         const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('🔴 Stream: ' + title)}&dates=${format(start)}/${format(end)}&details=${encodeURIComponent('Schau rein auf https://twitch.tv/outburstone')}&sf=true&output=xml`;
         window.open(url, '_blank');
@@ -173,7 +173,7 @@
             if (diff > 0 && diff < 12 * 60 * 60 * 1000) { 
                 const h = Math.floor(diff / 3600000);
                 const min = Math.floor((diff % 3600000) / 60000);
-                el.innerText = `Startet in ${h}h ${min}m`;
+                el.innerText = `(in ${h}h ${min}m)`;
             } else { el.innerText = ""; }
         });
     }
@@ -242,7 +242,6 @@
                     bg = `linear-gradient(90deg, ${colors.join(', ')})`;
                     btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
                 }
-
                 if (currentSection.classList.contains('today')) {
                     currentSection.classList.add(glowClass);
                     document.title = `🔴 LIVE: ${titel}`;
@@ -261,10 +260,10 @@
                         <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
                         <div class="slot-body">
                             <div class="time-badge">
-                                ${zeit} Uhr 
+                                <span>${zeit} Uhr</span>
+                                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
                                 <i class="far fa-calendar-plus cal-btn" title="Zu Google Kalender hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
                             </div>
-                            <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
                             <p class="event-title">${titel}</p>
                             ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
                         </div>
