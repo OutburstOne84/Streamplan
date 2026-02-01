@@ -66,7 +66,6 @@
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
         
         .countdown { color: #ff0000; font-size: 14px; font-weight: 800; text-transform: uppercase; }
-        
         .cal-btn { cursor: pointer; color: rgba(255,255,255,0.8); transition: 0.2s; font-size: 14px; }
         .cal-btn:hover { color: #fff; transform: scale(1.2); }
         
@@ -91,10 +90,22 @@
         .choice-btn.ki { background: var(--kick-color); color: #000; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; }
 
+        /* FOOTER NEU */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; flex-wrap: wrap; }
-        .social-icons a { color: var(--social-color); font-size: 26px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.05); }
-        .social-icons a:hover { transform: translateY(-5px); background: var(--accent-blue); color: white; }
+        .social-icons { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; flex-wrap: wrap; }
+        .social-icons a { color: var(--social-color); font-size: 24px; transition: 0.3s; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 15px; background: rgba(0,0,0,0.05); text-decoration: none; }
+        
+        /* Hover Farben für Socials */
+        .social-icons a.tw:hover { background: #9146FF; color: white; }
+        .social-icons a.ki:hover { background: #53fc18; color: black; }
+        .social-icons a.yt:hover { background: #FF0000; color: white; }
+        .social-icons a.ig:hover { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; }
+        .social-icons a.tt:hover { background: #000000; color: white; }
+        .social-icons a.x:hover { background: #000000; color: white; }
+
+        .legal-links { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .legal-links a { color: var(--social-color); text-decoration: none; font-size: 13px; font-weight: 700; opacity: 0.6; transition: 0.2s; }
+        .legal-links a:hover { opacity: 1; color: var(--accent-blue); }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
@@ -127,12 +138,16 @@
 
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a>
-        <a href="https://kick.com/outburstone" target="_blank" title="Kick"><i class="fas fa-bolt"></i></a>
-        <a href="https://youtube.com/@DEIN_NAME" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://instagram.com/DEIN_NAME" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://x.com/DEIN_NAME" target="_blank" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://twitch.tv/outburstone" target="_blank" class="tw" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://kick.com/outburstone" target="_blank" class="ki" title="Kick"><i class="fas fa-bolt"></i></a>
+        <a href="https://youtube.com/@DEIN_NAME" target="_blank" class="yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/DEIN_NAME" target="_blank" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/DEIN_NAME" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+    </div>
+    <div class="legal-links">
+        <a href="DEIN_LINK">Impressum</a>
+        <a href="DEIN_LINK">Datenschutz</a>
     </div>
 </footer>
 
