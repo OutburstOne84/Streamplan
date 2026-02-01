@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streamplan JenNyan</title>
+    <style>
+        :root { 
+            --background-gradient-1: #FEF3F7; --background-gradient-2: #FFC7D6; 
+            --text-color: #FF93AA; --primary-color: #F47590; --border-color: #EB6E9C; 
+            --default-fill-color: rgba(254, 243, 247, 0.7); --badge-color: #FFBBD2; 
+        }
+        .dark { 
+            --background-gradient-1: #FFB2C3; --background-gradient-2: #FF8AA5; 
+            --text-color: #FFF; --primary-color: #FFF; --default-fill-color: #FA819D; 
+        }
+        body { 
+            margin: 0; font-family: 'Lato', sans-serif; 
+            background: linear-gradient(180deg, var(--background-gradient-1), var(--background-gradient-2)); 
+            min-height: 100vh; color: #333;
+        }
+        header, main { width: 95%; max-width: 800px; margin: auto; text-align: center; position: relative; z-index: 2; }
+        header { padding: 40px 0; }
+        h1 { font-size: 40px; color: #301826; margin: 0; }
+        h1 span { display: block; font-size: 25px; color: var(--primary-color); }
+        
+        section { 
+            display: flex; margin-top: 20px; border: solid 1px var(--border-color); 
+            border-radius: 25px; background-color: var(--default-fill-color); overflow: hidden; text-align: left;
+        }
+        .weekday { padding: 25px; width: 180px; border-right: solid 1px var(--border-color); background: rgba(255,255,255,0.1); }
+        .weekday h3 { margin: 0; color: #301826; }
+        .weekday h3 span { display: block; font-size: 22px; }
+        
+        .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .slot { display: flex; align-items: center; padding: 15px; text-decoration: none; border-bottom: 1px solid rgba(235, 110, 156, 0.2); }
+        .slot:last-child { border-bottom: none; }
+        .slot img { width: 65px; border-radius: 10px; margin-right: 20px; }
+        .slot h4 { background: var(--badge-color); color: #fff; padding: 3px 12px; border-radius: 15px; display: inline-block; margin: 0 0 5px 0; font-size: 14px; }
+        .slot p { margin: 0; color: var(--text-color); font-weight: bold; font-size: 16px; }
+        .slot p span { display: block; font-weight: normal; font-size: 13px; opacity: 0.8; }
+
+        .today { box-shadow: 0 0 20px var(--border-color); border: 2px solid var(--border-color); }
+        .offday-text { padding: 30px; text-align: center; width: 100%; font-weight: bold; color: var(--text-color); text-transform: uppercase; }
+
+        @media(max-width: 600px) {
+            section { flex-direction: column; }
+            .weekday { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><span>JenNyan</span> Streamplan</h1>
+    <p id="status-msg">Lade aktuellen Plan...</p>
+</header>
+
+<main id="plan-container">
+    </main>
+
+<script>
+    // --- KONFIGURATION ---
+    const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
+    const SHEET_NAME = 'Plan'; 
+    // ---------------------
+
+    const fullUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+
+    fetch(fullUrl)
+        .then(res => res.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const container = document.getElementById('plan-container');
+            container.innerHTML = '';
+            document.getElementById('status-msg').innerText = "Wochenplan";
+
+            rows.forEach(row => {
+                // CSV Spalten trennen (beachtet Anführungszeichen)
+                const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
+
+                if (clean.length < 5) return;
+                const [tag, datum, zeit, titel, untertitel, spielID, status] = clean;
+
+                const section = document.createElement('section');
+                if (status.toLowerCase().includes('today')) section.className = 'today';
+
+                let innerHTML = `
+                    <div class="weekday"><h3><span>${tag}</span>${datum}</h3></div>
+                    <div class="slots">`;
+
+                if (status.toLowerCase().includes('offday')) {
+                    innerHTML += `<div class="offday-text">✨ Streamfrei ✨</div>`;
+                } else {
+                    innerHTML += `
+                        <a href="https://twitch.tv/jennyan" target="_blank" class="slot">
+                            <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID}-144x192.jpg" alt="Game">
+                            <div class="content">
+                                <h4>ab ${zeit} Uhr</h4>
+                                <p>${titel} <span>${untertitel}</span></p>
+                            </div>
+                        </a>`;
+                }
+
+                innerHTML += `</div>`;
+                section.innerHTML = innerHTML;
+                container.appendChild(section);
+            });
+        })
+        .catch(err => {
+            document.getElementById('status-msg').innerText = "Fehler beim Laden. ID oder Freigabe prüfen!";
+            console.error(err);
+        });
+</script>
+
+</body>
+</html>
