@@ -44,7 +44,9 @@
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid #f0f0f0; }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; }
+        
+        /* Das Bild verstecken, falls die Spiel-ID fehlt oder ungültig ist */
+        .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; border: 1px solid #eee; background: #fafafa; }
         
         .slot-body { flex: 1; }
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
@@ -53,7 +55,6 @@
         
         .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
         
-        /* SPEZIAL-STYLE FÜR OFFDAY */
         .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: var(--accent-pink); font-size: 22px; letter-spacing: 1px; }
 
         @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
@@ -66,7 +67,7 @@
         <div class="dot"></div> JETZT LIVE AUF TWITCH
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
-    <p id="status-msg">Lade Plan-Daten...</p>
+    <p id="status-msg">Lade Plan...</p>
 </header>
 
 <main id="plan-container"></main>
@@ -92,8 +93,10 @@
 
             const [tag, datumStr, zeit, titel, untertitel, spielID, status, gaeste, link] = clean;
 
+            // Live-Check
             if (status && status.toLowerCase() === 'live') isLiveNow = true;
 
+            // Neuen Tag erstellen
             if (datumStr !== lastDate) {
                 const parts = datumStr.split('.');
                 const termin = new Date(parts[2], parts[1]-1, parts[0]); termin.setHours(0,0,0,0);
@@ -108,19 +111,24 @@
                 lastDate = datumStr;
             }
 
-            // Prüfung: Wenn der Status "offday" ist, wird kein Slot-Design geladen
+            // INHALT STEUERN
             if (status && status.toLowerCase() === 'offday') {
+                // Wenn Offday, dann überschreiben wir den Inhalt der Slots-Box komplett
                 currentSlotsDiv.innerHTML = `<div class="offday-container">✨ STREAMFREI ✨</div>`;
-            } else {
+            } else if (currentSlotsDiv.innerHTML.indexOf('STREAMFREI') === -1) {
+                // Nur hinzufügen, wenn der Tag nicht bereits auf "Streamfrei" gesetzt wurde
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
                 const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
                 
+                // Falls SpielID nur eine Zahl ist, Bild laden. Falls leer, Standardbild nutzen.
+                const finalImg = (spielID && !isNaN(spielID)) ? `https://static-cdn.jtvnw.net/ttv-boxart/${spielID}-144x192.jpg` : 'https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';
+
                 const slotHTML = `
                     <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${spielID || '509658'}-144x192.jpg" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg'">
+                        <img src="${finalImg}" alt="">
                         <div class="slot-body">
-                            <div class="time-badge">${zeit} Uhr</div>
-                            <p class="event-title">${titel} <span class="event-subtitle">${untertitel}</span></p>
+                            <div class="time-badge">${zeit || '??:??'} Uhr</div>
+                            <p class="event-title">${titel || 'Stream'} <span class="event-subtitle">${untertitel || ''}</span></p>
                             ${guestHTML}
                             ${linkHTML}
                         </div>
