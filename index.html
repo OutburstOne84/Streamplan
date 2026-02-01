@@ -39,17 +39,26 @@
             color: white; padding: 8px 12px; border-radius: 12px; font-weight: 900; font-size: 13px; 
             display: inline-flex; flex-direction: column; align-items: center; gap: 5px; 
             margin-top: 15px; text-decoration: none; cursor: pointer; border: 2px solid white;
-            animation: pulse-l 1.5s infinite; text-align: center;
+            animation: pulse-l 1.5s infinite; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         @keyframes pulse-l { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
-        /* SECTIONS */
-        section { display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
-        .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); border: 3px solid var(--accent-blue); transform: scale(1.02); }
+        /* SECTIONS & EFFECTS */
+        section { 
+            display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; 
+            background-color: var(--section-bg); overflow: hidden; text-align: left; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); transition: all 0.3s ease;
+        }
+        .past-day { opacity: 0.5; filter: grayscale(80%); }
+        .past-day:hover { opacity: 0.85; filter: grayscale(0%); transform: scale(1.01); }
+        .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
+
         .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
+        .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
         .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--slot-border); }
+        .slot:last-child { border-bottom: none; }
         .slot img { width: 65px; height: 85px; object-fit: cover; border-radius: 8px; margin-right: 20px; }
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; }
         .event-title { margin: 5px 0 0; font-weight: 800; font-size: 18px; }
@@ -72,7 +81,7 @@
         .social-icons a:hover { transform: scale(1.2); color: var(--accent-blue); }
         .legal-link { color: var(--social-color); text-decoration: none; font-size: 13px; font-weight: bold; opacity: 0.7; }
 
-        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
+        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } }
     </style>
 </head>
 <body>
@@ -110,11 +119,16 @@
         <a href="https://youtube.com/@DEIN_NAME" target="_blank"><i class="fab fa-youtube"></i></a>
         <a href="https://kick.com/outburstone" target="_blank"><i class="fas fa-bolt"></i></a>
     </div>
-    <div style="margin-top: 15px;"><a href="DEIN_LINK" target="_blank" class="legal-link">Impressum/Datenschutz</a></div>
+    <div style="margin-top: 15px;"><a href="DEIN_LINK" target="_blank" class="legal-link"><i class="fas fa-file-signature"></i> Impressum/Datenschutz</a></div>
 </footer>
 
 <script>
     const toggleSwitch = document.querySelector('#checkbox');
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') toggleSwitch.checked = true;
+    }
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
@@ -131,15 +145,25 @@
         document.getElementById('multiModal').style.display = "block";
     }
     function closeModal() { document.getElementById('multiModal').style.display = "none"; }
+    window.onclick = function(e) { if (e.target == document.getElementById('multiModal')) closeModal(); }
 
     const SHEET_ID = '1Tqh44T0aVLwoxvql2yN5NRnwAUxtPi_LAYQvV9HWu5U'; 
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Plan`;
+
+    // DATE DISPLAY
+    const curr = new Date();
+    const diff = curr.getDate() - curr.getDay() + (curr.getDay() === 0 ? -6 : 1); 
+    const first = new Date(new Date().setDate(diff));
+    const last = new Date(new Date().setDate(diff + 6));
+    document.getElementById('week-range').innerText = `${first.toLocaleDateString('de-DE')} - ${last.toLocaleDateString('de-DE')}`;
 
     fetch(url).then(res => res.text()).then(data => {
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
-        const heute = new Date().toLocaleDateString('de-DE');
+        
+        const heuteVergleich = new Date();
+        heuteVergleich.setHours(0,0,0,0);
         let lastDate = "";
 
         rows.forEach(row => {
@@ -151,14 +175,29 @@
 
             if (datumStr !== lastDate) {
                 const section = document.createElement('section');
-                if (datumStr === heute) section.className = 'today';
+                const parts = datumStr.split('.');
+                const termin = new Date(parts[2], parts[1]-1, parts[0]);
+                termin.setHours(0,0,0,0);
+
+                if (termin.getTime() === heuteVergleich.getTime()) {
+                    section.className = 'today';
+                } else if (termin.getTime() < heuteVergleich.getTime()) {
+                    section.className = 'past-day';
+                }
+
                 section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:14px;color:var(--accent-blue);">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
 
-            const statusArea = container.lastElementChild.querySelector('.status-area');
-            const slotsDiv = container.lastElementChild.querySelector('.slots');
+            const currentSection = container.lastElementChild;
+            const statusArea = currentSection.querySelector('.status-area');
+            const slotsDiv = currentSection.querySelector('.slots');
+
+            // LIVE LOGIC
+            let tUrl = "https://twitch.tv/outburstone";
+            let yUrl = "https://youtube.com/@DEIN_KANAL/live";
+            let kUrl = "https://kick.com/outburstone";
 
             if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
@@ -168,24 +207,21 @@
                 let platforms = [];
 
                 if (status === 'live') { platforms = ['twitch']; label += "<br>AUF TWITCH"; }
-                else if (status === 'live-yt') { platforms = ['youtube']; label += "<br>AUF YOUTUBE"; bg = "var(--youtube-color)"; }
+                else if (status === 'live-yt' || (status === "" && link && link.toLowerCase().includes("youtube"))) { 
+                    platforms = ['youtube']; label += "<br>AUF YOUTUBE"; bg = "var(--youtube-color)"; 
+                }
                 else if (status === 'live-kick') { platforms = ['kick']; label += "<br>AUF KICK"; bg = "var(--kick-color)"; btn.style.color="#000"; }
                 else {
                     bg = "var(--multi-gradient)";
                     if (status === 'all' || status === 'live-both') platforms = ['twitch', 'youtube', 'kick'];
-                    else platforms = status.split(',');
+                    else platforms = status.split(',').map(p => p.trim());
                     
-                    if (platforms.length > 1) {
-                        label = "JETZT LIVE AUF<br>" + platforms.join(' & ').toUpperCase();
-                        btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
-                    } else {
-                        btn.href = (status === 'live-yt' ? link : "https://twitch.tv/outburstone");
-                        btn.target = "_blank";
-                    }
+                    label = "JETZT LIVE AUF<br>" + platforms.join(' & ').toUpperCase();
+                    btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); };
                 }
                 
                 if (platforms.length === 1) {
-                    btn.href = (platforms[0] === 'youtube' && link ? link : (platforms[0] === 'kick' ? "https://kick.com/outburstone" : "https://twitch.tv/outburstone"));
+                    btn.href = (platforms[0] === 'youtube' && link ? link : (platforms[0] === 'kick' ? kUrl : tUrl));
                     btn.target = "_blank";
                 }
 
