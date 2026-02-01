@@ -64,7 +64,7 @@
         <div class="dot"></div> JETZT LIVE AUF TWITCH
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
-    <p id="status-msg">Lade Plan...</p>
+    <p id="status-msg">Pläne werden geladen...</p>
 </header>
 
 <main id="plan-container"></main>
@@ -88,15 +88,16 @@
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 5) return;
 
-            // ZUORDNUNG BASIEREND AUF DEINER TABELLE (F = Status)
+            // ZUORDNUNG
             const tag = clean[0];
             const datumStr = clean[1];
             const zeit = clean[2];
             const titel = clean[3];
             const untertitel = clean[4];
-            const status = clean[5]; // Spalte F ist jetzt der Status!
-            const gaeste = clean[6]; // Spalte G
-            const link = clean[7];   // Spalte H
+            const spielID = clean[5]; // Spalte F (Zahlencode)
+            const status = clean[6];  // Spalte G
+            const gaeste = clean[7];  // Spalte H
+            const link = clean[8];    // Spalte I
 
             if (status && status.toLowerCase() === 'live') isLiveNow = true;
 
@@ -119,14 +120,15 @@
                 const linkHTML = (link && link !== 'null' && link !== '') ? `<a href="${link}" target="_blank" class="btn-link">📺 VIDEO ANSEHEN</a>` : '';
                 const guestHTML = (gaeste && gaeste !== 'null' && gaeste !== '') ? `<div style="color:var(--accent-pink); font-size:13px; font-weight:bold; margin-top:5px;">👥 ${gaeste}</div>` : '';
                 
-                // Wir nutzen den Titel oder Untertitel, um eine Spiel-ID zu "raten", falls keine da ist
-                // Standard: Just Chatting (509658)
+                // Bild laden mit der ID aus Spalte F. Wenn leer, Just Chatting nutzen.
+                const finalImg = (spielID && !isNaN(spielID)) ? `https://static-cdn.jtvnw.net/ttv-boxart/${spielID}-144x192.jpg` : 'https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';
+
                 const slotHTML = `
                     <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg">
+                        <img src="${finalImg}" alt="">
                         <div class="slot-body">
-                            <div class="time-badge">${zeit || '??:??'} Uhr</div>
-                            <p class="event-title">${titel || 'Stream'} <span class="event-subtitle">${untertitel || ''}</span></p>
+                            <div class="time-badge">${zeit} Uhr</div>
+                            <p class="event-title">${titel} <span class="event-subtitle">${untertitel}</span></p>
                             ${guestHTML}
                             ${linkHTML}
                         </div>
