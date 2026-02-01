@@ -12,59 +12,83 @@
             --badge-color: #2563eb; --action-color: #1d4ed8; --slot-border: #f0f4f8;
             --social-color: #1e3a8a; 
             --twitch-color: #9146FF; --youtube-color: #FF0000; --kick-color: #53fc18;
+            --multi-gradient: linear-gradient(90deg, #9146FF, #FF0000, #53fc18);
         }
+
         [data-theme="dark"] {
             --bg-1: #0f172a; --bg-2: #1e293b; --text-color: #f1f5f9; --accent-blue: #60a5fa; 
             --border-color: #334155; --section-bg: #1e293b; --date-bg: #334155; 
-            --badge-color: #3b82f6; --social-color: #f1f5f9;
+            --badge-color: #3b82f6; --action-color: #2563eb; --slot-border: #475569; --social-color: #f1f5f9;
         }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); min-height: 100vh; color: var(--text-color); padding-bottom: 50px; transition: 0.3s; }
         header, main, footer { width: 95%; max-width: 850px; margin: auto; text-align: center; position: relative; }
+        
         header { padding: 60px 0 30px; }
-        h1 { font-size: 48px; margin: 0; font-weight: 900; }
-        h1 span { display: block; font-size: 24px; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 2px; }
-        #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-top: 10px; font-weight: bold; }
+        h1 { font-size: 48px; margin: 0; font-weight: 900; letter-spacing: -1px; }
+        h1 span { display: block; font-size: 24px; color: var(--accent-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
         
-        section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .past-day { opacity: 0.4; filter: grayscale(100%); transition: 0.3s; }
-        .past-day:hover { opacity: 1; filter: grayscale(0%); }
-        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); }
+        #status-container { margin-top: 20px; font-size: 18px; font-weight: 700; color: var(--text-color); }
+        #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-left: 8px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
 
-        .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-        .weekday h3 span { display: block; font-size: 26px; font-weight: 900; }
+        /* LIVE GLOW ANIMATIONS */
+        @keyframes glow-twitch { 0% { box-shadow: 0 0 5px #9146FF; } 50% { box-shadow: 0 0 25px #9146FF; } 100% { box-shadow: 0 0 5px #9146FF; } }
+        .glow-twitch { animation: glow-twitch 2s infinite !important; border-color: #9146FF !important; }
+
+        section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.4s ease; }
         
-        .slots { flex: 1; display: flex; flex-direction: column; }
-        .slot { display: flex; align-items: center; padding: 20px; border-bottom: 1px solid var(--slot-border); }
-        .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 10px; margin-right: 20px; background: #ddd; }
+        .past-day { opacity: 0.4 !important; filter: grayscale(100%); }
+        .past-day:hover { opacity: 0.9 !important; filter: grayscale(0%) !important; transform: translateY(-3px); }
+
+        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
+
+        .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
+        .weekday h3 span { display: block; font-size: 26px; font-weight: 900; line-height: 1; color: var(--text-color); }
+        .weekday .date-label { font-size: 14px; color: var(--accent-blue); font-weight: 700; margin-top: 5px; }
         
-        .event-title { margin: 5px 0; font-weight: 800; font-size: 19px; }
-        .time-badge { background: var(--badge-color); color: white; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: bold; }
+        .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 120px; }
+        .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); position: relative; }
+        .slot:last-child { border-bottom: none; }
+        .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; background: #eee; }
+        
+        .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
+        .event-title { margin: 8px 0 0; font-weight: 800; font-size: 20px; }
 
-        .live-tag-badge { background: var(--twitch-color); color: white; padding: 8px 12px; border-radius: 10px; font-weight: 900; font-size: 11px; text-decoration: none; margin-top: 10px; display: inline-block; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .live-tag-badge {
+            background: var(--twitch-color); color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; 
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; text-decoration: none;
+            animation: pulse-badge 1.5s infinite;
+        }
+        @keyframes pulse-badge { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        footer { margin-top: 50px; padding: 30px; border-top: 2px solid var(--border-color); }
-        .social-icons a { color: var(--social-color); font-size: 24px; margin: 0 10px; text-decoration: none; opacity: 0.8; }
-        .social-icons a:hover { opacity: 1; color: var(--accent-blue); }
-        .legal-link { display: block; margin-top: 20px; font-size: 12px; opacity: 0.6; text-decoration: none; color: var(--text-color); font-weight: bold; }
+        /* FOOTER */
+        footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
+        .social-icons { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .social-icons a { color: var(--social-color); font-size: 22px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(0,0,0,0.05); text-decoration: none; }
+        .social-icons a:hover { background: var(--accent-blue); color: white; transform: translateY(-3px); }
+
+        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
 </head>
 <body>
 
 <header>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
-    <div id="week-range">Lädt Zeitraum...</div>
+    <div id="status-container">Wochenplan: <span id="week-range">Lädt...</span></div>
 </header>
 
 <main id="plan-container"></main>
 
 <footer>
     <div class="social-icons">
-        <a href="https://twitch.tv/outburstone"><i class="fab fa-twitch"></i></a>
-        <a href="https://youtube.com"><i class="fab fa-youtube"></i></a>
-        <a href="https://instagram.com"><i class="fab fa-instagram"></i></a>
+        <a href="https://twitch.tv/outburstone" title="Twitch"><i class="fab fa-twitch"></i></a>
+        <a href="https://kick.com/outburstone" title="Kick"><i class="fas fa-bolt"></i></a>
+        <a href="https://youtube.com/" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/" title="X"><i class="fab fa-x-twitter"></i></a>
     </div>
-    <a href="#" class="legal-link">IMPRESSUM & DATENSCHUTZ</a>
+    <a href="#" style="font-size: 12px; opacity: 0.6; color: var(--text-color); text-decoration: none; font-weight: bold; margin-top: 20px; display: inline-block;">IMPRESSUM & DATENSCHUTZ</a>
 </footer>
 
 <script>
@@ -75,7 +99,7 @@
         const rows = data.split('\n').slice(1);
         const container = document.getElementById('plan-container');
         container.innerHTML = '';
-        const heute = new Date(); heute.setHours(0,0,0,0);
+        const heuteVergleich = new Date(); heuteVergleich.setHours(0,0,0,0);
         let allDates = [];
         let lastDate = "";
 
@@ -84,7 +108,7 @@
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 4) return;
             const [tag, datumStr, zeit, titel, spielID, statusRaw] = clean;
-            
+
             if (datumStr) {
                 const p = datumStr.split('.');
                 allDates.push(new Date(p[2], p[1]-1, p[0]));
@@ -94,16 +118,17 @@
                 const section = document.createElement('section');
                 const p = datumStr.split('.');
                 const termin = new Date(p[2], p[1]-1, p[0]);
-                if (termin.getTime() === heute.getTime()) section.className = 'today';
-                else if (termin.getTime() < heute.getTime()) section.className = 'past-day';
+                if (termin.getTime() === heuteVergleich.getTime()) section.className = 'today glow-twitch';
+                else if (termin.getTime() < heuteVergleich.getTime()) section.className = 'past-day';
                 
-                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><br><small>${datumStr}</small></h3><div class="status-area"></div></div><div class="slots"></div>`;
+                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="date-label">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
 
-            const slotsDiv = container.lastElementChild.querySelector('.slots');
-            const statusArea = container.lastElementChild.querySelector('.status-area');
+            const currentSection = container.lastElementChild;
+            const slotsDiv = currentSection.querySelector('.slots');
+            const statusArea = currentSection.querySelector('.status-area');
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
             if (status === 'live') {
@@ -111,30 +136,31 @@
             }
 
             if (status === 'offday') {
-                slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:bold; color:#94a3b8;">❄️ STREAMFREI</div>`;
+                slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
             } else {
-                // BILD-LOGIK
-                let imgSource;
-                let cleanID = spielID.replace(/["']/g, "").trim();
+                // BILD-LOGIK (Unterstützt Links und IDs)
+                let imageUrl;
+                let rawID = spielID.trim();
                 
-                if (cleanID.startsWith('http')) {
-                    imgSource = cleanID;
+                if (rawID.startsWith('http')) {
+                    imageUrl = rawID;
                 } else {
-                    const id = (cleanID && !isNaN(cleanID)) ? cleanID : '509658';
-                    imgSource = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
+                    const id = (rawID && !isNaN(rawID)) ? rawID : '509658';
+                    imageUrl = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
 
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="${imgSource}" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
-                        <div class="slot-info">
-                            <span class="time-badge">${zeit} Uhr</span>
+                        <img src="${imageUrl}" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
+                        <div class="slot-body">
+                            <div class="time-badge">${zeit} Uhr</div>
                             <p class="event-title">${titel}</p>
                         </div>
                     </div>`);
             }
         });
 
+        // Zeitraum im Header
         if (allDates.length > 0) {
             allDates.sort((a,b) => a-b);
             document.getElementById('week-range').innerText = `${allDates[0].toLocaleDateString('de-DE')} - ${allDates[allDates.length-1].toLocaleDateString('de-DE')}`;
