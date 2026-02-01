@@ -29,8 +29,7 @@
         
         #week-range { background: var(--badge-color); color: white; padding: 6px 16px; border-radius: 10px; display: inline-block; margin-top: 15px; font-weight: 700; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
 
-        /* TAG/NACHT MODUS BUTTON */
-        .theme-switch-wrapper { position: absolute; right: 0; top: 20px; display: flex; align-items: center; gap: 10px; }
+        .theme-switch-wrapper { position: absolute; right: 0; top: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
         .theme-switch { display: inline-block; height: 24px; position: relative; width: 48px; }
         .theme-switch input { display:none; }
         .slider { background-color: #cbd5e1; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 34px; }
@@ -57,7 +56,6 @@
         .live-tag-badge { background: var(--twitch-color); color: white; padding: 10px 16px; border-radius: 14px; font-weight: 900; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; text-decoration: none; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* FOOTER SOCIALS */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
         .social-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
         .social-icons a { font-size: 22px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: white; text-decoration: none; transition: 0.3s; }
@@ -78,7 +76,7 @@
         }
         .legal-btn:hover { background: var(--accent-blue); color: white; border-color: var(--accent-blue); transform: scale(1.05); }
 
-        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } .theme-switch-wrapper { top: 10px; } }
+        @media(max-width: 650px) { section { flex-direction: column; } .weekday { width: 100%; border-right: none; } }
     </style>
 </head>
 <body>
@@ -90,7 +88,7 @@
         <span>🌙</span>
     </div>
     <h1><span>OutburstOne</span> STREAMPLAN</h1>
-    <div id="week-range">Lädt...</div>
+    <div id="status-container">Wochenplan: <span id="week-range">Lädt...</span></div>
 </header>
 
 <main id="plan-container"></main>
@@ -104,11 +102,10 @@
         <a href="https://tiktok.com/" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
         <a href="https://x.com/" class="x" title="X"><i class="fab fa-x-twitter"></i></a>
     </div>
-    <a href="DEIN_LINK" class="legal-btn">Impressum & Datenschutz</a>
+    <a href="#" class="legal-btn">Impressum & Datenschutz</a>
 </footer>
 
 <script>
-    // THEME SWITCH LOGIK
     const toggleSwitch = document.querySelector('#checkbox');
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
@@ -163,13 +160,13 @@
                 slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:20px;">❄️ STREAMFREI ❄️</div>`;
             } else {
                 let finalImg;
-                // Aggressiver Fix für URLs aus Google Sheets
-                let cleanID = spielID.replace(/["']/g, "").trim();
+                // EXTRA-FIX FÜR GOOGLE SHEET LINKS (Entfernt allen Müll)
+                let ultraCleanID = spielID.replace(/[^\x20-\x7E]/g, "").replace(/["']/g, "").trim();
 
-                if (cleanID.toLowerCase().startsWith('http')) {
-                    finalImg = cleanID;
+                if (ultraCleanID.toLowerCase().includes('http')) {
+                    finalImg = ultraCleanID;
                 } else {
-                    const id = (cleanID && !isNaN(cleanID)) ? cleanID : '509658';
+                    const id = (ultraCleanID && !isNaN(ultraCleanID)) ? ultraCleanID : '509658';
                     finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
 
@@ -186,9 +183,7 @@
 
         if (allDates.length > 0) {
             allDates.sort((a,b) => a-b);
-            const start = allDates[0].toLocaleDateString('de-DE');
-            const end = allDates[allDates.length-1].toLocaleDateString('de-DE');
-            document.getElementById('week-range').innerText = `${start} - ${end}`;
+            document.getElementById('week-range').innerText = `${allDates[0].toLocaleDateString('de-DE')} - ${allDates[allDates.length-1].toLocaleDateString('de-DE')}`;
         }
     });
 </script>
