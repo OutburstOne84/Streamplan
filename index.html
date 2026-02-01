@@ -34,29 +34,31 @@
         h1 span { display: block; font-size: 28px; color: var(--accent-blue); font-weight: normal; }
 
         #status-container { margin-top: 15px; font-size: 16px; font-weight: bold; color: var(--text-color); }
-
-        /* Wochen-Datum Optik wie Uhrzeit */
         #week-range {
             background: var(--badge-color); color: white; padding: 5px 15px; border-radius: 8px;
             font-size: 15px; display: inline-block; margin-left: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* Box Design mit Hover-Effekt */
         section { 
             display: flex; margin-top: 30px; border: 2px solid var(--border-color); border-radius: 20px; 
             background-color: white; overflow: hidden; text-align: left; 
             box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Die sanfte Bewegung */
         }
         
-        section:hover {
-            transform: translateY(-4px); /* Schwebe-Effekt */
-            box-shadow: 0 12px 25px rgba(59, 130, 246, 0.2); /* Weicherer, blauer Schatten */
+        /* Vergangene Tage: Standardmäßig blass (50%) */
+        .past-day { 
+            opacity: 0.5; 
+            filter: grayscale(80%); 
+            transition: opacity 0.3s ease, filter 0.3s ease; 
         }
 
-        .past-day { opacity: 0.6; filter: grayscale(50%); }
+        /* Vergangene Tage: Beim Drüberfahren deutlicher (85%) */
+        .past-day:hover { 
+            opacity: 0.85; 
+            filter: grayscale(0%); 
+        }
+
         .today { box-shadow: 0 0 35px rgba(59, 130, 246, 0.3); border: 3px solid var(--accent-blue); transform: scale(1.02); }
-        .today:hover { transform: scale(1.03) translateY(-4px); }
 
         .weekday { padding: 20px; width: 150px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 24px; font-weight: 900; }
@@ -71,8 +73,7 @@
         .time-badge { background: var(--badge-color); color: white; padding: 3px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
         .event-title { margin: 0; font-weight: 800; font-size: 18px; color: #1e3a8a; }
         
-        .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; transition: background 0.2s; }
-        .btn-link:hover { background: #0037cc; }
+        .btn-link { background: var(--action-color); color: white; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-top: 10px; display: inline-block; }
 
         .offday-container { padding: 40px; text-align: center; width: 100%; font-weight: 900; color: #64748b; font-size: 22px; letter-spacing: 1px; background-color: #f8fafc; }
 
@@ -87,7 +88,7 @@
     </a>
     <h1><span>OutburstOne</span> Streamplan</h1>
     <div id="status-container">
-        Aktueller Wochenplan: <span id="week-range">00.00. - 00.00.0000</span>
+        Aktueller Wochenplan: <span id="week-range">Lädt...</span>
     </div>
 </header>
 
