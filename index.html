@@ -2,8 +2,9 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Streamplan OutburstOne</title>
+   <meta property="og:title" content="Streamplan OutburstOne"> 
+<meta name="twitter:title" content="Streamplan OutburstOne"> 
+<title>Streamplan OutburstOne</title>
     <style>
         :root { 
             --background-gradient-1: #FEF3F7; --background-gradient-2: #FFC7D6; 
@@ -22,7 +23,10 @@
         header, main { width: 95%; max-width: 800px; margin: auto; text-align: center; position: relative; z-index: 2; }
         header { padding: 40px 0; }
         h1 { font-size: 40px; color: #301826; margin: 0; }
-        h1 span { display: block; font-size: 25px; color: var(--primary-color); }
+       <header>
+    <h1><span>OutburstOne</span> Streamplan</h1>
+    <p id="status-msg">Lade Daten aus Google Sheets...</p>
+</header>
         
         section { 
             display: flex; margin-top: 20px; border: solid 1px var(--border-color); 
