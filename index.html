@@ -67,6 +67,8 @@
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; line-height: 1; }
+        /* DATUM UNTER WOCHENTAG GRÖSSER */
+        .date-subtext { font-size: 18px; color: var(--accent-blue); font-weight: 900; margin-top: 5px; }
         
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 120px; }
         .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); position: relative; }
@@ -235,7 +237,7 @@
                 termin.setHours(0,0,0,0);
                 if (termin.getTime() === heuteVergleich.getTime()) section.className = 'today';
                 else if (termin.getTime() < heuteVergleich.getTime()) section.className = 'past-day';
-                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div style="font-size:14px;color:var(--accent-blue);font-weight:700;">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
+                section.innerHTML = `<div class="weekday"><h3><span>${tag}</span><div class="date-subtext">${datumStr}</div></h3><div class="status-area"></div></div><div class="slots"></div>`;
                 container.appendChild(section);
                 lastDate = datumStr;
             }
@@ -244,7 +246,6 @@
             const statusArea = currentSection.querySelector('.status-area');
             const slotsDiv = currentSection.querySelector('.slots');
 
-            // LIVE BUTTON LOGIK
             if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
                 btn.className = 'live-tag-badge';
@@ -283,7 +284,6 @@
                 statusArea.appendChild(btn);
             }
 
-            // SLOT INHALT
             if (status === 'offday') {
                 slotsDiv.style.display = "flex";
                 slotsDiv.style.justifyContent = "center";
@@ -294,7 +294,8 @@
                 slotsDiv.style.display = "flex";
                 slotsDiv.style.justifyContent = "center";
                 slotsDiv.style.alignItems = "center";
-                slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:20px; letter-spacing:1px; text-transform:uppercase;">⏳ Noch nichts festgelegt</div>`;
+                // ICON AUF BEIDEN SEITEN
+                slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:20px; letter-spacing:1px; text-transform:uppercase;">⏳ Noch nichts festgelegt ⏳</div>`;
             }
             else {
                 let finalImg;
