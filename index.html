@@ -100,16 +100,7 @@
         }
         @keyframes pulse-badge { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
 
-.placeholder-text { 
-    padding: 40px; 
-    text-align: center; 
-    font-weight: 900; 
-    color: #94a3b8; 
-    font-size: 20px; 
-    letter-spacing: 1px; 
-    text-transform: uppercase; 
-    width: 100%; 
-}
+
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
         /* MODAL */
@@ -305,38 +296,27 @@
                 statusArea.appendChild(btn);
             }
 
-// INHALTS-LOGIK
             if (status === 'offday') {
-                slotsDiv.style.display = "flex";
-                slotsDiv.style.justifyContent = "center";
-                slotsDiv.style.alignItems = "center";
-                slotsDiv.innerHTML = `<div class="placeholder-text">❄️ Streamfrei ❄️</div>`;
-            } 
-            else if (!titel || titel.trim() === "" || titel === "-") {
-                // FALL: Nichts eingetragen
-                slotsDiv.style.display = "flex";
-                slotsDiv.style.justifyContent = "center";
-                slotsDiv.style.alignItems = "center";
-                slotsDiv.innerHTML = `<div class="placeholder-text">⏳ Noch nichts festgelegt</div>`;
-            }
-            else {
-                // FALL: Stream-Eintrag vorhanden
-                let finalImg;
-                let val = spielVal.trim();
-                if (val.toLowerCase() === 'dispatch' || val === '2016584281') {
-                    finalImg = 'https://images2.imgbox.com/39/10/UeIeAn21_o.jpg';
-                } else if (val.toLowerCase().startsWith('http')) {
-                    finalImg = val;
-                } else {
-                    const id = (val && !isNaN(val)) ? val : '509658';
-                    finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
-                }
+    slotsDiv.style.display = "flex";
+    slotsDiv.style.justifyContent = "center";
+    slotsDiv.style.alignItems = "center";
+    slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:24px; letter-spacing:3px; text-transform:uppercase;">❄️ Streamfrei ❄️</div>`;
+}
+		else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
+                const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="${finalImg}" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
-                        <div class="slot-info">
-                            <div class="time-badge">${zeit} Uhr</div>
+                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
+                        <div class="slot-body">
+                            <div class="time-row">
+                                <div class="time-badge">
+                                    ${zeit} Uhr 
+                                    <i class="far fa-calendar-plus cal-btn" title="Zu Google Kalender hinzufügen" onclick="addToCalendar('${titel.replace(/'/g, "\\'")}', '${datumStr}', '${zeit}')"></i>
+                                </div>
+                                <span class="countdown" data-date="${datumStr}" data-time="${zeit}"></span>
+                            </div>
                             <p class="event-title">${titel}</p>
+                            ${gaeste && gaeste!=='null' ? `<div style="color:var(--accent-blue);font-size:14px;font-weight:700;margin-top:6px;">👥 mit ${gaeste}</div>` : ''}
                         </div>
                     </div>`);
             }
