@@ -57,7 +57,23 @@
         .past-day:hover { opacity: 0.9 !important; filter: grayscale(0%) !important; transform: translateY(-3px); }
         .past-day.glow-twitch, .past-day.glow-yt, .past-day.glow-kick, .past-day.glow-multi { animation: none !important; border-color: var(--border-color) !important; }
 
-        .today { border: 3px solid var(--accent-blue); transform: scale(1.02); z-index: 5; }
+        .today { 
+    border: 5px solid var(--accent-blue); /* Noch etwas dickerer Rahmen */
+    transform: scale(1.04); /* Ein kleines Stück größer für mehr Präsenz */
+    z-index: 10; 
+    
+    /* Mehrschichtiger Glow: 
+       1. Ein direkter Schein am Rahmen 
+       2. Ein breiter blauer Nebel 
+       3. Ein tiefer dunkler Schatten für die Höhe */
+    box-shadow: 
+        0 0 15px rgba(59, 130, 246, 0.7), 
+        0 0 40px rgba(59, 130, 246, 0.4), 
+        0 15px 50px rgba(0, 0, 0, 0.2); 
+    
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; line-height: 1; }
