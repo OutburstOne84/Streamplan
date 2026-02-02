@@ -279,8 +279,12 @@
             }
 
             if (status === 'offday') {
-                slotsDiv.innerHTML = `<div style="padding:45px;text-align:center;width:100%;font-weight:900;color:#94a3b8;font-size:24px;">❄️ STREAMFREI ❄️</div>`;
-            } else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
+    slotsDiv.style.display = "flex";
+    slotsDiv.style.justifyContent = "center";
+    slotsDiv.style.alignItems = "center";
+    slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:24px; letter-spacing:3px; text-transform:uppercase;">❄️ Streamfrei ❄️</div>`;
+}
+		else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
                 const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
