@@ -52,28 +52,18 @@
 
         section { display: flex; margin-top: 35px; border: 2px solid var(--border-color); border-radius: 24px; background-color: var(--section-bg); overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.4s ease; }
         
-        /* Korrektur Vergangene Tage */
         .past-day { opacity: 0.4 !important; filter: grayscale(100%); }
         .past-day:hover { opacity: 0.9 !important; filter: grayscale(0%) !important; transform: translateY(-3px); }
         .past-day.glow-twitch, .past-day.glow-yt, .past-day.glow-kick, .past-day.glow-multi { animation: none !important; border-color: var(--border-color) !important; }
 
         .today { 
-    border: 5px solid var(--accent-blue); /* Noch etwas dickerer Rahmen */
-    transform: scale(1.04); /* Ein kleines Stück größer für mehr Präsenz */
-    z-index: 10; 
-    
-    /* Mehrschichtiger Glow: 
-       1. Ein direkter Schein am Rahmen 
-       2. Ein breiter blauer Nebel 
-       3. Ein tiefer dunkler Schatten für die Höhe */
-    box-shadow: 
-        0 0 15px rgba(59, 130, 246, 0.7), 
-        0 0 40px rgba(59, 130, 246, 0.4), 
-        0 15px 50px rgba(0, 0, 0, 0.2); 
-    
-    position: relative;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+            border: 5px solid var(--accent-blue); 
+            transform: scale(1.04); 
+            z-index: 10; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.7), 0 0 40px rgba(59, 130, 246, 0.4), 0 15px 50px rgba(0, 0, 0, 0.2); 
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; line-height: 1; }
@@ -100,10 +90,8 @@
         }
         @keyframes pulse-badge { 0% { transform: scale(1); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
 
-
         .dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
 
-        /* MODAL */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); }
         .modal-content { background: var(--section-bg); margin: 12% auto; padding: 40px; border-radius: 30px; width: 85%; max-width: 380px; text-align: center; position: relative; }
         .modal-btns { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
@@ -113,9 +101,8 @@
         .choice-btn.ki { background: var(--kick-color); color: #000; }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; }
 
-        /* FOOTER */
         footer { margin-top: 60px; padding: 40px 0; border-top: 2px solid var(--border-color); }
-        .social-icons { display: flex; justify(center); gap: 15px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
+        .social-icons { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; justify-content: center; }
         .social-icons a { color: var(--social-color); font-size: 22px; transition: 0.3s; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(0,0,0,0.05); text-decoration: none; }
         
         .social-icons a.tw:hover { background: #9146FF; color: white; }
@@ -167,13 +154,13 @@
     <div class="social-icons">
         <a href="https://twitch.tv/outburstone" target="_blank" class="tw" title="Twitch"><i class="fab fa-twitch"></i></a>
         <a href="https://kick.com/outburstone" target="_blank" class="ki" title="Kick"><i class="fas fa-bolt"></i></a>
-        <a href="https://youtube.com/@DEIN_NAME" target="_blank" class="yt" title="YouTube"><i class="fab fa-youtube"></i></a>
-        <a href="https://instagram.com/DEIN_NAME" target="_blank" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@DEIN_NAME" target="_blank" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
-        <a href="https://x.com/DEIN_NAME" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://youtube.com/@outburstone" target="_blank" class="yt" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/outburstone" target="_blank" class="ig" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@outburstone" target="_blank" class="tt" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="https://x.com/outburstone" target="_blank" class="x" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
     </div>
     <div class="legal-btn-container">
-        <a href="DEIN_LINK" class="legal-btn">Impressum / Datenschutz</a>
+        <a href="#" class="legal-btn">Impressum / Datenschutz</a>
     </div>
 </footer>
 
@@ -257,6 +244,7 @@
             const statusArea = currentSection.querySelector('.status-area');
             const slotsDiv = currentSection.querySelector('.slots');
 
+            // LIVE BUTTON LOGIK
             if (status.includes('live') || status.includes(',') || status === 'all') {
                 let btn = document.createElement('a');
                 btn.className = 'live-tag-badge';
@@ -279,9 +267,8 @@
                     btn.href = (platforms[0] === 'youtube' && link ? link : (platforms[0] === 'kick' ? "https://kick.com/outburstone" : "https://twitch.tv/outburstone"));
                     btn.target = "_blank";
                 } 
-                else if (platforms.length === 3) { label = "JETZT ÜBERALL LIVE"; bg = "var(--multi-gradient)"; glowClass = "glow-multi"; btn.onclick = (e) => { e.preventDefault(); openModal(platforms, link); }; }
                 else {
-                    label = `JETZT LIVE AUF<br>${platforms[0].toUpperCase()} & ${platforms[1].toUpperCase()}`;
+                    label = platforms.length === 3 ? "JETZT ÜBERALL LIVE" : `JETZT LIVE AUF<br>${platforms[0].toUpperCase()} & ${platforms[1].toUpperCase()}`;
                     glowClass = "glow-multi";
                     let colors = platforms.map(p => p === 'twitch' ? "#9146FF" : (p === 'youtube' ? "#FF0000" : "#53fc18"));
                     bg = `linear-gradient(90deg, ${colors.join(', ')})`;
@@ -296,17 +283,31 @@
                 statusArea.appendChild(btn);
             }
 
+            // SLOT INHALT
             if (status === 'offday') {
-    slotsDiv.style.display = "flex";
-    slotsDiv.style.justifyContent = "center";
-    slotsDiv.style.alignItems = "center";
-    slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:24px; letter-spacing:3px; text-transform:uppercase;">❄️ Streamfrei ❄️</div>`;
-}
-		else if (!slotsDiv.innerHTML.includes('STREAMFREI')) {
-                const finalImgID = (spielID && !isNaN(spielID)) ? spielID : '509658';
+                slotsDiv.style.display = "flex";
+                slotsDiv.style.justifyContent = "center";
+                slotsDiv.style.alignItems = "center";
+                slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:24px; letter-spacing:3px; text-transform:uppercase;">❄️ Streamfrei ❄️</div>`;
+            } 
+            else if (!titel || titel.trim() === "" || titel === "-") {
+                slotsDiv.style.display = "flex";
+                slotsDiv.style.justifyContent = "center";
+                slotsDiv.style.alignItems = "center";
+                slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:20px; letter-spacing:1px; text-transform:uppercase;">⏳ Noch nichts festgelegt</div>`;
+            }
+            else {
+                let finalImg;
+                if (spielID.toLowerCase() === 'dispatch' || spielID === '2016584281') {
+                    finalImg = 'https://images2.imgbox.com/39/10/UeIeAn21_o.jpg';
+                } else {
+                    const id = (spielID && !isNaN(spielID)) ? spielID : '509658';
+                    finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
+                }
+                
                 slotsDiv.insertAdjacentHTML('beforeend', `
                     <div class="slot">
-                        <img src="https://static-cdn.jtvnw.net/ttv-boxart/${finalImgID}-144x192.jpg">
+                        <img src="${finalImg}" onerror="this.src='https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg';">
                         <div class="slot-body">
                             <div class="time-row">
                                 <div class="time-badge">
