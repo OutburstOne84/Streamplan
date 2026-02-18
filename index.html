@@ -67,13 +67,14 @@
 
         .weekday { padding: 25px; width: 140px; background-color: var(--date-bg); border-right: 2px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex-shrink: 0; }
         .weekday h3 span { display: block; font-size: 26px; font-weight: 900; line-height: 1; }
-        /* DATUM UNTER WOCHENTAG GRÖSSER */
         .date-subtext { font-size: 18px; color: var(--accent-blue); font-weight: 900; margin-top: 5px; }
         
         .slots { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 120px; }
         .slot { display: flex; align-items: center; padding: 25px; border-bottom: 1px solid var(--slot-border); position: relative; }
         .slot:last-child { border-bottom: none; }
-        .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; }
+        
+        /* Bilder-Styling optimiert für manuelle Uploads */
+        .slot img { width: 70px; height: 95px; object-fit: cover; border-radius: 12px; margin-right: 25px; background: var(--bg-2); }
         
         .time-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .time-badge { background: var(--badge-color); color: white; padding: 4px 12px; border-radius: 8px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; }
@@ -168,6 +169,13 @@
 
 <script>
     const toggleSwitch = document.querySelector('#checkbox');
+    const currentTheme = localStorage.getItem('theme');
+
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') toggleSwitch.checked = true;
+    }
+
     toggleSwitch.addEventListener('change', (e) => {
         const theme = e.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
@@ -224,10 +232,13 @@
         let lastDate = "";
 
         rows.forEach(row => {
+            // Regex angepasst, um bis zu 9 Spalten zu erfassen (neu: manuellesBild)
             const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
             const clean = cols.map(c => c.replace(/^"|"$/g, '').trim());
             if (clean.length < 4) return;
-            const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link] = clean;
+            
+            // Zuordnung der Spalten aus Google Sheets
+            const [tag, datumStr, zeit, titel, spielID, statusRaw, gaeste, link, manuellesBild] = clean;
             const status = statusRaw ? statusRaw.toLowerCase() : "";
 
             if (datumStr !== lastDate) {
@@ -294,14 +305,22 @@
                 slotsDiv.style.display = "flex";
                 slotsDiv.style.justifyContent = "center";
                 slotsDiv.style.alignItems = "center";
-                // ICON AUF BEIDEN SEITEN
                 slotsDiv.innerHTML = `<div style="padding:40px; text-align:center; font-weight:900; color:#94a3b8; font-size:20px; letter-spacing:1px; text-transform:uppercase;">⏳ Noch nichts festgelegt ⏳</div>`;
             }
             else {
                 let finalImg;
-                if (spielID.toLowerCase() === 'dispatch' || spielID === '2016584281') {
+
+                // BILD-LOGIK:
+                // 1. Check: Manuelle URL in Spalte 9 (manuellesBild) vorhanden?
+                if (manuellesBild && manuellesBild.startsWith('http')) {
+                    finalImg = manuellesBild;
+                } 
+                // 2. Check: Spezial-Fall Dispatch
+                else if (spielID.toLowerCase() === 'dispatch' || spielID === '2016584281') {
                     finalImg = 'https://images2.imgbox.com/39/10/UeIeAn21_o.jpg';
-                } else {
+                } 
+                // 3. Fallback: Twitch-Datenbank (ID in Spalte 5)
+                else {
                     const id = (spielID && !isNaN(spielID)) ? spielID : '509658';
                     finalImg = `https://static-cdn.jtvnw.net/ttv-boxart/${id}-144x192.jpg`;
                 }
